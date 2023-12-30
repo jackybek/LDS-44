@@ -1,2 +1,2 @@
-sudo docker run -it -d --name opcuaserver44 opcuaserver-44 bash
-sudo docker exec -it opcuaserver44 /bin/bash
+sudo docker run -it -d --name opcualdsserver44 opcualdsserver-44 bash
+sudo docker exec -it opcualdsserver44 /bin/bash
