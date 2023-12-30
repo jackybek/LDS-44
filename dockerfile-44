@@ -1,4 +1,4 @@
-# sudo docker build -f dockerfile-44 -t opcuaserver44 --tag 'open62541' . --no-cache
+# sudo docker build -f dockerfile-44 -t opcualdsserver44 --tag 'opcualdsserver44' . --no-cache
 
 # need to run the container and enter it to perform the Make
 # 1. run the container in shell
