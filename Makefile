@@ -1,4 +1,4 @@
-HOME=/home/pi/open62541/
+HOME=/home/debian/open62541/
 CC=gcc
 CFLAGS1=-g -std=c99 -v
 #CC=g++
