@@ -1,3 +1,3 @@
-sudo docker stop opcuaserver44
-sudo docker remove opcuaserver44
+sudo docker stop opcualdsserver44
+sudo docker remove opcualdsserver44
 
