@@ -2,14 +2,14 @@
 
 # need to run the container and enter it to perform the Make
 # 1. run the container in shell
-# sudo docker run -it -d --name opcuaserver33 opcserver-33 bash
+# sudo docker run -it -d --name opcualdsserver44 opcldsserver-44 bash
 # 2. enter the container
-# sudo docker exec -it opcuaserver33 /bin/bash
+# sudo docker exec -it opcualdsserver44 /bin/bash
 # 3. install packages 
 # apt-get install nano  - no need
 
-# sudo docker stop opcuaserver33
-# sudo docker rm opcuaserver33
+# sudo docker stop opcualdsserver44
+# sudo docker rm opcualdsserver44
 
 FROM debian:latest
 LABEL maintainer=“jacky81100@yahoo.com”
