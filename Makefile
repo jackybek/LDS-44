@@ -1,4 +1,4 @@
-HOME=/home/debian/open62541/
+HOME=/root/open62541/
 CC=gcc
 CFLAGS1=-g -std=c99 -v
 #CC=g++
@@ -23,22 +23,3 @@ all: myNewLDSServer
 myNewLDSServer: $(OBJ)
 	$(CC) $(LDIR1) $(LDIR2) -o $@ $^ $(LDFLAGS) $(LIBS)
 
-
-#CC=gcc
-#CFLAGS1=-g -std=c99 -v
-#CFLAGS2=-I/home/pi/open62541/ -I/home/pi/open62541/include -I/home/pi/open6251/plugins -I/usr/local/include
-#DEPS=open62541.h
-#LIBS=-lm -lrt -lpthread  -lcrypto -lssl -lmbedcrypto -lmbedtls -lmbedx509 -lwebsockets
-#OBJ=open62541.o LDS_StartServer.o LDS_mainServer.o
-
-#ODIR=obj
-#LDIR1=/usr/local/lib
-#LDIR2=/usr/lib
-
-#all: myNewLDSServer
-
-#%.o: %.c $(DEPS)
-#	$(CC) -c -o $@ $< $(CFLAGS1) $(CFLAGS2)
-
-#myNewLDSServer: $(OBJ)
-#	$(CC) -o $@ $^ $(CFLAGS1) $(CFLAGS2) -L $(LDIR1) -L $(LDIR2) $(LIBS)

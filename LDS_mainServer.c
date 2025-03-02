@@ -142,7 +142,6 @@ UA_NodeId outDetectorCounter_Id;
 UA_NodeId outLaserCounter_Id;
 UA_NodeId outFlowPumpCounter_Id;
 UA_NodeId outDesiccantCounter_Id;
-
 //MYSQL *conn;
 #endif
 
@@ -150,60 +149,59 @@ int main(int argc, char *argv[])
 {
         //pthread_t OPCUAServerthread;
         //pthread_t Airgardthread;
-	int results;
+        int results;
 
-	//UA_Nodes_Setup = false;
-	UA_NodeId r2_airgard_data_Id;
+        //UA_Nodes_Setup = false;
+        UA_NodeId r2_airgard_data_Id;
 
-	if (argc != 2)
-	{
-		//printf("Usage : ./myNewLDSServer <local ip> <sensor ip> [<mqtt broker ip> <{pubsub}|pub|sub]> \n");
-		printf("Usage : ./myNewLDSServer <local ip> \n");
-		exit (0);
-	}
+        if (argc != 2)
+        {
+                //printf("Usage : ./myNewLDSServer <local ip> <sensor ip> [<mqtt broker ip> <{pubsub}|pub|sub]> \n");
+                printf("Usage : ./myNewLDSServer <local ip> \n");
+                exit (0);
+        }
 
-        UA_Server *server = UA_Server_new();	// UA_Server_new(config)
-	//UA_ServerConfig *config = UA_Server_getConfig(server); do this in StartOPCUAServer.c
-	//UA_ServerConfig_setDefault(config);	// do this in StartOPCUAServer.c
+        UA_Server *server = UA_Server_new();    // UA_Server_new(config)
+        //UA_ServerConfig *config = UA_Server_getConfig(server); do this in StartOPCUAServer.c
+        //UA_ServerConfig_setDefault(config);   // do this in StartOPCUAServer.c
 
         g_argc = argc;
-//	strcpy(g_argv_ip, argv[1]);	// 192.168.1.44
-//	g_argv_port = atoi(argv[2]);
+//      strcpy(g_argv_ip, argv[1]);     // 192.168.1.44
+//      g_argv_port = atoi(argv[2]);
 
-//	printf("In main(): g_argc = %d, argv = %s %s %s \n", g_argc, argv[0], argv[1], argv[2]);
-//	printf("In main() after processing argv: g_argc = %d, g_argv = %s %s %d\n", g_argc, argv[0], g_argv_ip, g_argv_port);
+//      printf("In main(): g_argc = %d, argv = %s %s %s \n", g_argc, argv[0], argv[1], argv[2]);
+//      printf("In main() after processing argv: g_argc = %d, g_argv = %s %s %d\n", g_argc, argv[0], g_argv_ip, g_argv_port);
 
     //if (results = pthread_create(&OPCUAServerthread, NULL, StartOPCUAServer, server))
-		//StartOPCUAServer(server, argv[1], argv); //(server, 192.168.1.109, 192.168.1.11);
-		StartOPCUALDSServer(server, argv[1]); //(server, 192.168.1.44);
-	/*
-		if (UA_NodeId_isNull(&r2_airgard_data_Id))
+                //StartOPCUAServer(server, argv[1], argv); //(server, 192.168.1.109, 192.168.1.11);
+                StartOPCUALDSServer(server, argv[1]); //(server, 192.168.1.44);
+        /*
+                if (UA_NodeId_isNull(&r2_airgard_data_Id))
                 {
                         UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "AG_mainOPCUAlient : fail to get handle to r2_airgard_data_Id");
                         goto cleanup;
                 }
+                while (1)
+                {
+                        r2_airgard_data_Id = CreateOPCUANodes(server);
+                        PopulateOPCUANodes(argv[2]);
+                }
+        */
 
-		while (1)
-		{
-			r2_airgard_data_Id = CreateOPCUANodes(server);
-			PopulateOPCUANodes(argv[2]);
-		}
-	*/
-
-		//printf("Error creating thread : StartOPCUAServer\n") ;
-	//else
-		//printf("%d Success : pthread_create StartOPCUAServer\n", results);
+                //printf("Error creating thread : StartOPCUAServer\n") ;
+        //else
+                //printf("%d Success : pthread_create StartOPCUAServer\n", results);
 
 
 //        if (results = pthread_create(&Airgardthread, NULL, ConnectToAirgard, server))
-//		printf("Error creating thread : ConnectToAirgard\n") ;
-//	else
-//		printf("%d Success : pthread_create ConnectToAirgard\n", results);
+//              printf("Error creating thread : ConnectToAirgard\n") ;
+//      else
+//              printf("%d Success : pthread_create ConnectToAirgard\n", results);
 
-	//pthread_join(OPCthread, NULL);
-	//pthread_join(Airgardthread, NULL);
+        //pthread_join(OPCthread, NULL);
+        //pthread_join(Airgardthread, NULL);
 
-	//pthread_exit(NULL);
+        //pthread_exit(NULL);
 cleanup:
-	return 0;
+        return 0;
 }
