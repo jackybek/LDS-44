@@ -566,11 +566,11 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 		// Certificate Verification that accepts every certificate. Can be overwritten when the policy is specialized.
 		// required for LDS
 //		UA_CertificateVerification_AcceptAll(&config1.certificateVerification);
-		config->secureChannelPKI.clear(&config->secureChannelPKI);
+		config1->secureChannelPKI.clear(&config->secureChannelPKI);
 		UA_ByteString_clear(&certificate);
 		UA_ByteString_clear(&privateKey);
 		for (size_t i = 0; i < trustListSize; i++)
-			UA_ByteString_clear_&trustList[i]);
+			UA_ByteString_clear(&trustList[i]);
 		
 		// Limits for SecureChannels - required for LDS
 		config1.maxSecureChannels = 40;
@@ -597,7 +597,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 	// add userid and password routine
   		// disable anonymous logins (2nd parameter set to false), enable 2 user/password logins
 		config1.accessControl.clear(&config1.accessControl);
-		retval = UA_AccessControl_default(&config1, UA_FALSE, NULL, &config1.securityPolicies[config1.securityPoliciesSize-1].policyUri, 2, logins);
+		retval = UA_AccessControl_default(&config1, UA_FALSE, &config1.securityPolicies[config1.securityPoliciesSize-1].policyUri, 2, logins);
 		if (retval != UA_STATUSCODE_GOOD)
 			goto cleanup;
 
