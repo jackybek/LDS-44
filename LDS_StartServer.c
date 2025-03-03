@@ -566,7 +566,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 		// Certificate Verification that accepts every certificate. Can be overwritten when the policy is specialized.
 		// required for LDS
 //		UA_CertificateVerification_AcceptAll(&config1.certificateVerification);
-		config1.secureChannelPKI.clear(&config1->secureChannelPKI);
+		config1.secureChannelPKI.clear(&config1.secureChannelPKI);
 		UA_ByteString_clear(&certificate);
 		UA_ByteString_clear(&privateKey);
 		for (size_t i = 0; i < trustListSize; i++)
