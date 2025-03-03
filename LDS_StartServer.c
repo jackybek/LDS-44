@@ -8,7 +8,7 @@
 #include <open62541/plugin/securitypolicy.h>
 #include <open62541/plugin/accesscontrol_default.h>
 #include <open62541/plugin/nodestore_default.h>
-#include <open62541/plugin/pki_default.h>
+//#include <open62541/plugin/pki_default.h>
 #include <open62541/server.h>
 #include <open62541/server_config_default.h>
 
@@ -430,7 +430,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
     		/* Loading of a revocation list currently unsupported */
     		UA_ByteString *revocationList = NULL;
     		size_t revocationListSize = 0;
-
+	/*
 		#ifdef __linux__
 			const char *trustlistFolder = NULL;
 			const char *issuerlistFolder = NULL;
@@ -468,7 +468,8 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 				UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartOPCUAServer.c : Successfully verified Certificate folders");
 
 		#else //not __linux__
-    			retval = UA_ServerConfig_setDefaultWithSecurityPolicies(&config1, 4840,			// swap config with config1
+	*/
+                        retval = UA_ServerConfig_setDefaultWithSecurityPolicies(&config1, 4840,			// swap config with config1
                                                        &certificate, &privateKey,
                                                        trustList, trustListSize,
                                                        issuerList, issuerListSize,
@@ -479,7 +480,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
                         	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartServer.c : error loading Server Configuration");
                         	goto cleanup;
                 	}
-		#endif
+	//	#endif
 
                 // refer to open62541.org->Server->Server Configuration & plugins/ua_config_default for the list of members in the UA_ServerConfig structure
 		if (!&config1)
@@ -507,7 +508,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 
                 config1.shutdownDelay = 0; //5000.0; // millisecond
                 config1.securityPolicyNoneDiscoveryOnly = UA_TRUE;
- 		config1.serverCertificate = certificate;
+ //		config1.serverCertificate = certificate;
 
 		// Server Description
 		UA_BuildInfo_clear(&config1.buildInfo);
@@ -564,8 +565,13 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 
 		// Certificate Verification that accepts every certificate. Can be overwritten when the policy is specialized.
 		// required for LDS
-		UA_CertificateVerification_AcceptAll(&config1.certificateVerification);
-
+//		UA_CertificateVerification_AcceptAll(&config1.certificateVerification);
+		config->secureChannelPKI.clear(&config->secureChannelPKI);
+		UA_ByteString_clear(&certificate);
+		UA_ByteString_clear(&privateKey);
+		for (size_t i = 0; i < trustListSize; i++)
+			UA_ByteString_clear_&trustList[i]);
+		
 		// Limits for SecureChannels - required for LDS
 		config1.maxSecureChannels = 40;
 		config1.maxSecurityTokenLifetime = 10 * 60 * 1000; // 10 minutes */
@@ -716,8 +722,8 @@ cleanup:
 	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "OPCUA LDS Server was unexpectedly shut down");
 	if (uaLDSServer1)	// (uaServer)
 		UA_Server_delete(uaLDSServer1); // UA_Server_delete(uaServer);
-	else
-		UA_ServerConfig_clean(&config1); // UA_ServerConfig_clean(config);
+	//else
+		//UA_ServerConfig_clean(&config1); // UA_ServerConfig_clean(config);
 
 	close(sockfd);
 	//CloseHistoryDBConnection();
