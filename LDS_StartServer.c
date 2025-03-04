@@ -355,34 +355,6 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 
 	if (g_argc==2) 	// myNewLDSServer 192.168.1.44 //192.168.1.88 [192.168.1.11]
 	{
-		/*
-			  #ifdef UA_ENABLE_PUBSUB
-				// Details about the connection configuration and handling are located in
-					//  the pubsub connection tutorial
-				printf("\t----------------------Before setupUadpRange----------------- \n");
-				//   setupUadpRange(server);
-			  #endif
-		*/
-		//hostname or ip address available
-			//copy the hostname from char * to an open62541 variable
-		//printf("in g_argc segment %s %d\n", g_argv_ip, g_argv_port);
-
-		//char* OPCUAServerIP = ipaddress;
-		//UA_String hostname;
-		//UA_String_init(&hostname);
-		//hostname.length = strlen(g_argv[1]);
-		//hostname.data = (UA_Byte *) g_argv[1];
-		//hostname.length = strlen(g_argv_ip);
-		//hostname.data = (UA_Byte *) g_argv_ip; // this should be the ipaddress of the OPCUA Server : 192.168.2.33
-
-		//hostname.data = (UA_Byte*)OPCUAServerIP;
-
-		//Change the configuration - deprecated in v1.1.3
-		//UA_ServerConfig_setCustomHostname(config, hostname);
-		//printf("hostname.data (ip) = %s\n", hostname.data);
-
-		//#endif
-
                 // start OPCUA LDS Server
                 UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "starting LDS server...");
 
@@ -393,7 +365,6 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 		// encryption routine
     		/* Load certificate and private key */
 		const char* env_sslcertificateloc = getenv("SSLCERTIFICATELOC");
-
 		UA_ByteString certificate = loadFile(env_sslcertificateloc); //(SSLCERTIFICATELOC);
 		//UA_ByteString certificate = loadFile("/etc/ssl/certs/ldscert44.pem");	// => symbolic link
    		//UA_ByteString certificate = loadFile("/usr/local/ssl/certs/ldscert44.pem");  // actual location
@@ -403,7 +374,8 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 			goto cleanup;
 		}
 		UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartServer.c : Successfully loaded LDS Certficate : %s", env_sslcertificateloc);
- 
+
+
 		const char* env_privatekeyloc = getenv("PRIVATEKEYLOC");
     		UA_ByteString privateKey = loadFile(env_privatekeyloc); //loadFile(PRIVATEKEYLOC);
     		//UA_ByteString privateKey = loadFile("/usr/local/ssl/private/ldsprivate-key.pem");
@@ -430,45 +402,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
     		/* Loading of a revocation list currently unsupported */
     		UA_ByteString *revocationList = NULL;
     		size_t revocationListSize = 0;
-	/*
-		#ifdef __linux__
-			const char *trustlistFolder = NULL;
-			const char *issuerlistFolder = NULL;
-			const char *revocationlistFolder = NULL;
 
-			retval = UA_ServerConfig_setDefaultWithSecurityPolicies(&config1, 4840,
-							&certificate, &privateKey,
-							NULL, 0,
-							NULL, 0,
-							NULL, 0);
-			if (retval != UA_STATUSCODE_GOOD)
-			{
-				UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartServer.c : error loading Server Configuration");
-				goto cleanup;
-			}
-			else
-				UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartOPCUAServer.c : Successfully loaded Server Configuration");
-
-			config1.certificateVerification.clear(&config1.certificateVerification);
-				#ifdef UA_ENABLE_CERT_REJECTED_DIR
-					retval = UA_CertificateVerification_CertFolders(&config1.certificateVerification,
-                                                                        trustlistFolder, issuerlistFolder,
-                                                                        revocationlistFolder, NULL);
-				#else
-					retval = UA_CertificateVerification_CertFolders(&config1.certificateVerification,
-                                                                        trustlistFolder, issuerlistFolder,
-                                                                        revocationlistFolder);
-				#endif
-			if (retval != UA_STATUSCODE_GOOD)
-                	{
-                        	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartServer.c : error verifying Certificate folders");
-                        	goto cleanup;
-                	}
-			else
-				UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartOPCUAServer.c : Successfully verified Certificate folders");
-
-		#else //not __linux__
-	*/
                         retval = UA_ServerConfig_setDefaultWithSecurityPolicies(&config1, 4840,			// swap config with config1
                                                        &certificate, &privateKey,
                                                        trustList, trustListSize,
@@ -480,7 +414,32 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
                         	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartServer.c : error loading Server Configuration");
                         	goto cleanup;
                 	}
-	//	#endif
+			else
+			{
+				// add security policies
+				retval = UA_ServerConfig_addSecurityPolicyBasic256Sha256(&config1, &certificate, &privateKey);
+				if(retval != UA_STATUSCODE_GOOD) {
+        				UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
+                       			"Could not add SecurityPolicy#Basic256Sha256 with error code %s",
+                       			UA_StatusCode_name(retval));
+    				}
+
+				retval = UA_ServerConfig_addSecurityPolicyAes256Sha256RsaPss(&config1, &certificate, &privateKey);
+                                if(retval != UA_STATUSCODE_GOOD) {
+                                        UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
+                                        "Could not add SecurityPolicy#AES256Sha256RsaPss with error code %s",
+                                        UA_StatusCode_name(retval));
+                                }
+
+				retval = UA_ServerConfig_addSecurityPolicyAes128Sha256RsaOaep(&config1, &certificate, &privateKey);
+                                if(retval != UA_STATUSCODE_GOOD) {
+                                        UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
+                                        "Could not add SecurityPolicy#Aes128Sha256RsaOaep with error code %s",
+                                        UA_StatusCode_name(retval));
+                                }
+
+
+			}
 
                 // refer to open62541.org->Server->Server Configuration & plugins/ua_config_default for the list of members in the UA_ServerConfig structure
 		if (!&config1)
@@ -495,6 +454,25 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 		//if (!config1.logger.log)
 		//	config1.logger = UA_Log_Stdout;
 
+
+        // add userid and password routine
+                // disable anonymous logins (2nd parameter set to false), enable 2 user/password logins
+                config1.accessControl.clear(&config1.accessControl);
+                retval = UA_AccessControl_default(&config1, UA_FALSE, &config1.securityPolicies[config1.securityPoliciesSize-1].policyUri, 2, logins);
+                if (retval != UA_STATUSCODE_GOOD)
+                        goto cleanup;
+
+                // set accessControl functions for nodeManagement - not required for a LDS server
+                /*
+                config1.accessControl.allowAddNode = allowAddNode;
+                config1.accessControl.allowDeleteNode = allowDeleteNode;
+                config1.accessControl.allowBrowseNode = allowBrowseNode;
+                config1.accessControl.allowHistoryUpdateUpdateData = allowHistoryUpdateUpdateData;
+                config1.accessControl.allowHistoryUpdateDeleteRawModified = allowHistoryUpdateDeleteRawModified;
+                */
+                UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "added 2 user credentials to OPCUA LDS server \n");
+        // end userid and password routine
+
                 // Change the configuration
                 char* OPCUALDSServerIP = OPCLDSipaddress;   // 192.168.2.44
                 //UA_String hostname;
@@ -507,7 +485,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
                 //printf("hostname.data (ip) = %s\n", hostname.data);
 
                 config1.shutdownDelay = 0; //5000.0; // millisecond
-                config1.securityPolicyNoneDiscoveryOnly = UA_TRUE;
+                config1.securityPolicyNoneDiscoveryOnly = UA_FALSE;
  //		config1.serverCertificate = certificate;
 
 		// Server Description
@@ -543,7 +521,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 		// Multicast DNS related settings - LDS - refer to github/open62541/open62541/examples/discovery/server_lds.c
 		config1.mdnsEnabled = true;
 		config1.mdnsConfig.mdnsServerName = UA_String_fromChars("Local Discovery Server");
-		config1.mdnsInterfaceIP = UA_String_fromChars("0.0.0.0");	// 42.42.42.42
+		config1.mdnsInterfaceIP = UA_String_fromChars("42.42.42.42");	// 42.42.42.42
 		// set the capabilities
 		config1.mdnsConfig.serverCapabilitiesSize = 1;
 		UA_String *caps = (UA_String *)UA_Array_new(1, &UA_TYPES[UA_TYPES_STRING]);
@@ -571,9 +549,9 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 		UA_ByteString_clear(&privateKey);
 		for (size_t i = 0; i < trustListSize; i++)
 			UA_ByteString_clear(&trustList[i]);
-		
+
 		// Limits for SecureChannels - required for LDS
-		config1.maxSecureChannels = 40;
+		config1.maxSecureChannels = 400;
 		config1.maxSecurityTokenLifetime = 10 * 60 * 1000; // 10 minutes */
 
 		// Limits for Sessions - required for LDS
@@ -594,52 +572,6 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
                 UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "LDS_StartServer.c : after encryption routine");
 	// end encryption routine
 
-	// add userid and password routine
-  		// disable anonymous logins (2nd parameter set to false), enable 2 user/password logins
-		config1.accessControl.clear(&config1.accessControl);
-		retval = UA_AccessControl_default(&config1, UA_FALSE, &config1.securityPolicies[config1.securityPoliciesSize-1].policyUri, 2, logins);
-		if (retval != UA_STATUSCODE_GOOD)
-			goto cleanup;
-
-		// set accessControl functions for nodeManagement - not required for a LDS server
-		/*
-		config1.accessControl.allowAddNode = allowAddNode;
-		config1.accessControl.allowDeleteNode = allowDeleteNode;
-		config1.accessControl.allowBrowseNode = allowBrowseNode;
-		config1.accessControl.allowHistoryUpdateUpdateData = allowHistoryUpdateUpdateData;
-		config1.accessControl.allowHistoryUpdateDeleteRawModified = allowHistoryUpdateDeleteRawModified;
-		*/
-		UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "adding 2 user credentials to OPCUA LDS server ...\n");
-	// end userid and password routine
-
-	// Historizing
-	/* not required for a LDS server
-                config1.accessHistoryDataCapability = true;
-                config1.maxReturnDataValues = 0 ;  // 0 means unlimited size
-                config1.accessHistoryEventsCapability = true;
-                config1.maxReturnEventValues = 0;  // 0 means unlimted size
-                config1.insertDataCapability = true;
-                config1.insertEventCapability = true;
-                config1.insertAnnotationsCapability = true;
-                config1.replaceDataCapability = true;
-                config1.replaceEventCapability = true;
-                config1.updateDataCapability = true;
-                config1.updateEventCapability = true;
-                config1.deleteRawCapability = true;
-                config1.deleteEventCapability = true;
-                config1.deleteAtTimeDataCapability = true;*/
-	/*
-		#ifdef UA_ENABLE_PUBSUB
-					printf("\tJust about to start the OPCUA Server UADP thread\n");
-
-					// start OPCUA Server
-					UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "starting server...");
-
-					retval = UA_Server_run(server, &running); // blocking call - to test United Automation (ok)
-					if(retval != UA_STATUSCODE_GOOD)
-							goto cleanup;
-		#else
-	*/
 	// start OPCUA LDS Server
 	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "starting OPCUA LDS server ...\n");
 
@@ -649,38 +581,6 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
         UA_Int16 nsIdx_LDS = UA_Server_addNamespace(uaLDSServer1, "LDS");
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "New Namespace added with Nr. %d", nsIdx_LDS);
 
-	// create nodes - not required as LDS
-	//UA_NodeId r2_airgard_method_Id = CreateOPCUANodes(uaServer1);
-	// create method items - not required as LDS
-	//CreateServerMethodItems(uaServer1, r2_airgard_method_Id);
-	// connect to History database engine - mySQL - not required as LDS
-	//GetHistoryDBConnection();
-
-	// create events for remote control : methodcall -> event
-//	CreateServerEvents(uaServer1);
-
-        // create monitored items - not required as LDS
-        //CreateServerMonitoredItems(uaServer1);
-	// create historizing - needs monitored items to be setup first - not required as LDS
-	//CreateServerHistorizingItems(uaServer1);
-	// enable pub sub uadp / mqtt / AMQP
-	printf("LDS_StartOPCUAServer.c : g_argc = %d \n", g_argc);
-	/*
-	if (g_argc == 3)
-	{
-		// myNewServer 192.168.1.33 192.168.1.88	== using PubSub UADP
-		CreateServerPubSub(uaLDSServer1, NULL, nsIdx_LDS, NULL);	// namespaceIndex is needed for connectionProperties 
-	}
-	else if (g_argc == 4)
-		CreateServerPubSub(uaLDSServer1, brokeripaddress, nsIdx_LDS, "pubsub");
-	else if (g_argc == 5)	// argv[4] = pubsub, pub, sub
-		CreateServerPubSub(uaLDSServer1, brokeripaddress, nsIdx_LDS, argv[4]);
-	*/
-	/*
-	#ifdef UA_ENABLE_WEBSOCKET_SERVER
-    		UA_ServerConfig_addNetworkLayerWS(UA_Server_getConfig(uaLDSServer1), 7681, 0, 0, NULL, NULL);
-	#endif
-	*/
 	retval = UA_Server_run_startup(uaLDSServer1);
 	UA_Server_setServerOnNetworkCallback(uaLDSServer1, serverOnNetworkCallback, NULL);
 	if (retval != UA_STATUSCODE_GOOD)
@@ -721,14 +621,19 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 cleanup:
 	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "OPCUA LDS Server was unexpectedly shut down");
 	if (uaLDSServer1)	// (uaServer)
+	{
+		UA_Server_run_shutdown(uaLDSServer1);
 		UA_Server_delete(uaLDSServer1); // UA_Server_delete(uaServer);
-	//else
-		//UA_ServerConfig_clean(&config1); // UA_ServerConfig_clean(config);
+		return EXIT_FAILURE;
+	}
 
 	close(sockfd);
-	//CloseHistoryDBConnection();
-	//return retval == UA_STATUSCODE_GOOD ? EXIT_SUCCESS : EXIT_FAILURE;
-//#endif
+
+	while(running)
+        	UA_Server_run_iterate(uaLDSServer1, true);
+
+    	UA_Server_run_shutdown(uaLDSServer1);
+
 }
 
 
