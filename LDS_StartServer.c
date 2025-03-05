@@ -179,7 +179,7 @@ serverOnNetworkCallback(const UA_ServerOnNetwork *serverOnNetwork, UA_Boolean is
     memcpy(discovery_url, serverOnNetwork->discoveryUrl.data, serverOnNetwork->discoveryUrl.length);
     discovery_url[serverOnNetwork->discoveryUrl.length] = 0;
 }
-
+/*
 static UA_Boolean
 allowAddNode(UA_Server *server, UA_AccessControl *ac,
 		const UA_NodeId *sessionId, void *sessionContext,
@@ -188,7 +188,8 @@ allowAddNode(UA_Server *server, UA_AccessControl *ac,
 	//printf("Called allowAddNode \n");
 	return UA_TRUE;
 }
-
+*/
+/*
 static UA_Boolean
 allowDeleteNode(UA_Server *server, UA_AccessControl *ac,
 		const UA_NodeId *sessionId, void *sessionContext,
@@ -197,7 +198,8 @@ allowDeleteNode(UA_Server *server, UA_AccessControl *ac,
 	//printf("Called allowDeleteNode \n");
 	return UA_TRUE;
 }
-
+*/
+/*
 static UA_Boolean
 allowBrowseNode(UA_Server *server, UA_AccessControl *ac,
                 const UA_NodeId *sessionId, void *sessionContext,
@@ -206,7 +208,8 @@ allowBrowseNode(UA_Server *server, UA_AccessControl *ac,
         //printf("Called allowBrowseNode \n");
         return UA_TRUE;
 }
-
+*/
+/*
 static UA_Boolean allowHistoryUpdateUpdateData(UA_Server *server, UA_AccessControl *ac,
                 const UA_NodeId *sessionId, void *sessionContext,
                 const UA_NodeId *nodeId,
@@ -216,7 +219,8 @@ static UA_Boolean allowHistoryUpdateUpdateData(UA_Server *server, UA_AccessContr
 	//printf("Called allowHistoryUpdateUpdateData \n");
 	return UA_TRUE;
 }
-
+*/
+/*
 static UA_Boolean allowHistoryUpdateDeleteRawModified(UA_Server *server, UA_AccessControl *ac,
                 const UA_NodeId *sessionId, void *sessionContext,
                 const UA_NodeId *nodeId,
@@ -227,7 +231,7 @@ static UA_Boolean allowHistoryUpdateDeleteRawModified(UA_Server *server, UA_Acce
         //printf("Called allowHistoryUpdateDeleteRawModified \n");
 	return UA_TRUE;
 }
-
+*/
 // global variable //
 static const size_t usernamePasswordsSize = 2;
 static UA_UsernamePasswordLogin logins[2] = {
@@ -288,7 +292,7 @@ UA_EndpointDescription *getRegisterEndpointFromServer(const char *discoveryServe
     return returnEndpoint;
 }
 
-//================================================================
+/*================================================================
 static UA_StatusCode
 createEndpoint(UA_ServerConfig *conf, UA_EndpointDescription *endpoint,
                const UA_SecurityPolicy *securityPolicy,
@@ -306,10 +310,10 @@ createEndpoint(UA_ServerConfig *conf, UA_EndpointDescription *endpoint,
    // endpoint->transportProfileUri =
    //     UA_STRING_ALLOC("http://opcfoundation.org/UA-Profile/Transport/uatcp-uasc-uabinary");
 
-    /* Add security level value for the corresponding message security mode */
+    // Add security level value for the corresponding message security mode
     endpoint->securityLevel = (UA_Byte) securityMode;
 
-    /* Enable all login mechanisms from the access control plugin  */
+    // Enable all login mechanisms from the access control plugin
     UA_StatusCode retval = UA_Array_copy(conf->accessControl.userTokenPolicies,
                                          conf->accessControl.userTokenPoliciesSize,
                                          (void **)&endpoint->userIdentityTokens,
@@ -328,7 +332,7 @@ createEndpoint(UA_ServerConfig *conf, UA_EndpointDescription *endpoint,
 
     	return UA_STATUSCODE_GOOD;
 }
-
+*/
 
 
 //================================================================
@@ -336,7 +340,7 @@ createEndpoint(UA_ServerConfig *conf, UA_EndpointDescription *endpoint,
 //void* StartOPCUAServer(void* x_void_ptr, char* argv[])
 void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 {
-	int sockfd;
+	//int sockfd;
 	char* OPCLDSipaddress = argv;
 	//char* brokeripaddress = argv[3];
 
@@ -459,7 +463,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
         // add userid and password routine
                 // disable anonymous logins (2nd parameter set to false), enable 2 user/password logins
                 config1->accessControl.clear(&config1->accessControl);
-                retval = UA_AccessControl_default(config1, UA_FALSE, &config1->securityPolicies[config1->securityPoliciesSize-1].policyUri, 2, logins);
+                retval = UA_AccessControl_default(config1, UA_FALSE, &config1->securityPolicies[config1->securityPoliciesSize-1].policyUri, usernamePasswordsSize, logins);
                 if (retval != UA_STATUSCODE_GOOD)
                         goto cleanup;
 
@@ -471,11 +475,11 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
                 config1.accessControl.allowHistoryUpdateUpdateData = allowHistoryUpdateUpdateData;
                 config1.accessControl.allowHistoryUpdateDeleteRawModified = allowHistoryUpdateDeleteRawModified;
                 */
-                UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "added 2 user credentials to OPCUA LDS server \n");
+                UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "added %d user credentials to OPCUA LDS server \n", usernamePasswordsSize);
         // end userid and password routine
 
                 // Change the configuration
-                char* OPCUALDSServerIP = OPCLDSipaddress;   // 192.168.2.44
+                //char* OPCUALDSServerIP = OPCLDSipaddress;   // 192.168.2.44
                 //UA_String hostname;
                 //UA_String_init(&hostname);
                 //hostname.length = strlen(g_argv[1]);
@@ -632,13 +636,14 @@ cleanup:
 		return (void *)EXIT_FAILURE;
 	}
 
-	close(sockfd);
+	//close(sockfd);
 
 	while(running)
         	UA_Server_run_iterate(uaLDSServer1, true);
 
     	UA_Server_run_shutdown(uaLDSServer1);
 
+	return;
 }
 
 
