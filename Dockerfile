@@ -162,6 +162,7 @@ RUN ln -s /usr/local/ssl/private/ldsprivate-key.pem ldsprivate-key.pem
 RUN ls -la 
 
 # -- link default certificate and key to correct directories
+# if these 2 steps fail, then manually run the commands in the container
 WORKDIR /usr/local/ssl/certs/
 RUN ln -s /root/OPCUAProject/ldscert44.pem ldscert44.pem
 RUN ls -la
