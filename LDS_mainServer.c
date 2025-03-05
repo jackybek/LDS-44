@@ -150,10 +150,10 @@ int main(int argc, char *argv[])
 {
         //pthread_t OPCUAServerthread;
         //pthread_t Airgardthread;
-	int results;
+	//int results;
 
 	//UA_Nodes_Setup = false;
-	UA_NodeId r2_airgard_data_Id;
+	//UA_NodeId r2_airgard_data_Id;
 
 	if (argc != 2)
 	{
@@ -204,6 +204,6 @@ int main(int argc, char *argv[])
 	//pthread_join(Airgardthread, NULL);
 
 	//pthread_exit(NULL);
-cleanup:
-	return 0;
+//cleanup:
+//	return 0;
 }
