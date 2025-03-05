@@ -450,7 +450,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 			goto cleanup;
 		}
 		if (config1->nodestore.context == NULL)
-			UA_Nodestore_HashMap(&config1.nodestore);
+			UA_Nodestore_HashMap(&config1->nodestore);
 
 		//if (!config1.logger.log)
 		//	config1.logger = UA_Log_Stdout;
@@ -490,7 +490,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
  //		config1->serverCertificate = certificate;
 
 		// Server Description
-		UA_BuildInfo_clear(&config1.buildInfo);
+		UA_BuildInfo_clear(&config1->buildInfo);
 		const char* env_product_uri = getenv("PRODUCT_URI");
 		const char* env_manufacturer_name = getenv("MANUFACTURER_NAME");
 		const char* env_product_name = getenv("PRODUCT_NAME");
@@ -504,8 +504,8 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 			UA_STRING_ALLOC(VERSION(UA_OPEN62541_VER_MAJOR, UA_OPEN62541_VER_MINOR,
 						UA_OPEN62541_VER_PATCH, UA_OPEN62541_VER_LABEL));
 
-		config1.buildInfo.buildDate = UA_DateTime_now();
-		config1.buildInfo.buildNumber = UA_STRING_ALLOC(__DATE__ " " __TIME__);
+		config1->buildInfo.buildDate = UA_DateTime_now();
+		config1->buildInfo.buildNumber = UA_STRING_ALLOC(__DATE__ " " __TIME__);
 
 		UA_ApplicationDescription_clear(&config1->applicationDescription);
 		UA_String_clear(&config1->applicationDescription.applicationUri);
