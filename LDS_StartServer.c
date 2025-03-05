@@ -348,10 +348,11 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 	//UA_Server* uaServer = (UA_Server*)x_void_ptr; -- caused it to crash when UA_newWithConfig(config);
 	//UA_ServerConfig *config = UA_Server_getConfig(uaServer);
 
-	UA_Server *uaLDSServer1 = NULL;
+	UA_Server *uaLDSServer1 = UA_Server_new();
 
-	UA_ServerConfig config1;
-	memset(&config1, 0, sizeof(UA_ServerConfig));
+	UA_ServerConfig *config1 = UA_Server_getConfig(uaLDSServer1);
+	UA_ServerConfig_setMinimal(config1, 4840, NULL);
+//	memset(&config1, 0, sizeof(UA_ServerConfig));
 
 	if (g_argc==2) 	// myNewLDSServer 192.168.1.44 //192.168.1.88 [192.168.1.11]
 	{
@@ -403,7 +404,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
     		UA_ByteString *revocationList = NULL;
     		size_t revocationListSize = 0;
 
-                        retval = UA_ServerConfig_setDefaultWithSecurityPolicies(&config1, 4840,			// swap config with config1
+                        retval = UA_ServerConfig_setDefaultWithSecurityPolicies(config1, 4840,			// swap config with config1
                                                        &certificate, &privateKey,
                                                        trustList, trustListSize,
                                                        issuerList, issuerListSize,
@@ -417,21 +418,21 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 			else
 			{
 				// add security policies
-				retval = UA_ServerConfig_addSecurityPolicyBasic256Sha256(&config1, &certificate, &privateKey);
+				retval = UA_ServerConfig_addSecurityPolicyBasic256Sha256(config1, &certificate, &privateKey);
 				if(retval != UA_STATUSCODE_GOOD) {
         				UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
                        			"Could not add SecurityPolicy#Basic256Sha256 with error code %s",
                        			UA_StatusCode_name(retval));
     				}
 
-				retval = UA_ServerConfig_addSecurityPolicyAes256Sha256RsaPss(&config1, &certificate, &privateKey);
+				retval = UA_ServerConfig_addSecurityPolicyAes256Sha256RsaPss(config1, &certificate, &privateKey);
                                 if(retval != UA_STATUSCODE_GOOD) {
                                         UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
                                         "Could not add SecurityPolicy#AES256Sha256RsaPss with error code %s",
                                         UA_StatusCode_name(retval));
                                 }
 
-				retval = UA_ServerConfig_addSecurityPolicyAes128Sha256RsaOaep(&config1, &certificate, &privateKey);
+				retval = UA_ServerConfig_addSecurityPolicyAes128Sha256RsaOaep(config1, &certificate, &privateKey);
                                 if(retval != UA_STATUSCODE_GOOD) {
                                         UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
                                         "Could not add SecurityPolicy#Aes128Sha256RsaOaep with error code %s",
@@ -442,13 +443,13 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 			}
 
                 // refer to open62541.org->Server->Server Configuration & plugins/ua_config_default for the list of members in the UA_ServerConfig structure
-		if (!&config1)
+		if (!config1)
 		{
 			//return UA_STATUSCODE_BADINVALIDARGUMENT;
 			UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartServer.c : error loading Server Configuration");
 			goto cleanup;
 		}
-		if (config1.nodestore.context == NULL)
+		if (config1->nodestore.context == NULL)
 			UA_Nodestore_HashMap(&config1.nodestore);
 
 		//if (!config1.logger.log)
@@ -457,8 +458,8 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 
         // add userid and password routine
                 // disable anonymous logins (2nd parameter set to false), enable 2 user/password logins
-                config1.accessControl.clear(&config1.accessControl);
-                retval = UA_AccessControl_default(&config1, UA_FALSE, &config1.securityPolicies[config1.securityPoliciesSize-1].policyUri, 2, logins);
+                config1->accessControl.clear(&config1->accessControl);
+                retval = UA_AccessControl_default(config1, UA_FALSE, &config1->securityPolicies[config1->securityPoliciesSize-1].policyUri, 2, logins);
                 if (retval != UA_STATUSCODE_GOOD)
                         goto cleanup;
 
@@ -484,9 +485,9 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
                 //UA_ServerConfig_setCustomHostname(&config1, hostname);
                 //printf("hostname.data (ip) = %s\n", hostname.data);
 
-                config1.shutdownDelay = 0; //5000.0; // millisecond
-                config1.securityPolicyNoneDiscoveryOnly = UA_FALSE;
- //		config1.serverCertificate = certificate;
+                config1->shutdownDelay = 0; //5000.0; // millisecond
+                config1->securityPolicyNoneDiscoveryOnly = UA_FALSE;
+ //		config1->serverCertificate = certificate;
 
 		// Server Description
 		UA_BuildInfo_clear(&config1.buildInfo);
@@ -496,43 +497,43 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 		const char* env_application_uri_server = getenv("APPLICATION_URI_SERVER");
 		const char* env_application_name = getenv("APPLICATION_NAME");
 
-		config1.buildInfo.productUri = UA_STRING_ALLOC(env_product_uri);  //(PRODUCT_URI);
-		config1.buildInfo.manufacturerName = UA_STRING_ALLOC(env_manufacturer_name); //(MANUFACTURER_NAME);
-		config1.buildInfo.productName = UA_STRING_ALLOC(env_product_name); //(PRODUCT_NAME);
-		config1.buildInfo.softwareVersion =
+		config1->buildInfo.productUri = UA_STRING_ALLOC(env_product_uri);  //(PRODUCT_URI);
+		config1->buildInfo.manufacturerName = UA_STRING_ALLOC(env_manufacturer_name); //(MANUFACTURER_NAME);
+		config1->buildInfo.productName = UA_STRING_ALLOC(env_product_name); //(PRODUCT_NAME);
+		config1->buildInfo.softwareVersion =
 			UA_STRING_ALLOC(VERSION(UA_OPEN62541_VER_MAJOR, UA_OPEN62541_VER_MINOR,
 						UA_OPEN62541_VER_PATCH, UA_OPEN62541_VER_LABEL));
 
 		config1.buildInfo.buildDate = UA_DateTime_now();
 		config1.buildInfo.buildNumber = UA_STRING_ALLOC(__DATE__ " " __TIME__);
 
-		UA_ApplicationDescription_clear(&config1.applicationDescription);
-		UA_String_clear(&config1.applicationDescription.applicationUri);
-		config1.applicationDescription.applicationUri.length = strlen(env_application_uri_server); //(APPLICATION_URI_SERVER);
-                config1.applicationDescription.applicationUri = UA_String_fromChars(env_application_uri_server); //(APPLICATION_URI_SERVER); //UA_STRING_ALLOC(APPLICATION_URI_SERVER);
-		config1.applicationDescription.productUri = UA_STRING_ALLOC(env_product_uri); //PRODUCT_URI);
-		config1.applicationDescription.applicationName = UA_LOCALIZEDTEXT_ALLOC("en", env_application_name); //, APPLICATION_NAME);
+		UA_ApplicationDescription_clear(&config1->applicationDescription);
+		UA_String_clear(&config1->applicationDescription.applicationUri);
+		config1->applicationDescription.applicationUri.length = strlen(env_application_uri_server); //(APPLICATION_URI_SERVER);
+                config1->applicationDescription.applicationUri = UA_String_fromChars(env_application_uri_server); //(APPLICATION_URI_SERVER); //UA_STRING_ALLOC(APPLICATION_URI_SERVER);
+		config1->applicationDescription.productUri = UA_STRING_ALLOC(env_product_uri); //PRODUCT_URI);
+		config1->applicationDescription.applicationName = UA_LOCALIZEDTEXT_ALLOC("en", env_application_name); //, APPLICATION_NAME);
 
 		// LDS ++ refer to https://opcfoundation.org/UA/schemas/1.04/ServerCapabilities.csv
 		// NA, DA, HD, AC, HE, GDS, LDS, DI, ADI, FDI, FDIC, PLC, S95, RCP, PUB, AUTOID, MDIS, CNC, PLK, FDT, TMC, CSPP, 61850, PACKML, MTC
 		// AUTOML, SERCOS, MIMOSA, WITSML, DEXPI, IOLINK, VROBOT, PNO
-		config1.applicationDescription.applicationType = UA_APPLICATIONTYPE_DISCOVERYSERVER;	// acts as DISCOVERY SERVER ONLY OR UA_APPLICATIONTYPE_SERVER
+		config1->applicationDescription.applicationType = UA_APPLICATIONTYPE_DISCOVERYSERVER;	// acts as DISCOVERY SERVER ONLY OR UA_APPLICATIONTYPE_SERVER
 
 		// Multicast DNS related settings - LDS - refer to github/open62541/open62541/examples/discovery/server_lds.c
-		config1.mdnsEnabled = true;
-		config1.mdnsConfig.mdnsServerName = UA_String_fromChars("Local Discovery Server");
-		config1.mdnsInterfaceIP = UA_String_fromChars("42.42.42.42");	// 42.42.42.42
+		config1->mdnsEnabled = true;
+		config1->mdnsConfig.mdnsServerName = UA_String_fromChars("Local Discovery Server");
+		config1->mdnsInterfaceIP = UA_String_fromChars("42.42.42.42");	// 42.42.42.42
 		// set the capabilities
-		config1.mdnsConfig.serverCapabilitiesSize = 1;
+		config1->mdnsConfig.serverCapabilitiesSize = 1;
 		UA_String *caps = (UA_String *)UA_Array_new(1, &UA_TYPES[UA_TYPES_STRING]);
 		caps[0] = UA_String_fromChars("LDS");	// local discovery service
 		//caps[1] = UA_String_fromChars("HD");	// provide historical data
 		//caps[2] = UA_String_fromChars("DA");	// provide current data
 		//caps[3] = UA_String_fromChars("GDS");	// global discovery Server information model
-		config1.mdnsConfig.serverCapabilities = caps;
-		config1.discoveryCleanupTimeout = 60*60;
+		config1->mdnsConfig.serverCapabilities = caps;
+		config1->discoveryCleanupTimeout = 60*60;
 
-		config1.verifyRequestTimestamp = UA_RULEHANDLING_ACCEPT; //UA_RULEHANDLING_WARN;
+		config1->verifyRequestTimestamp = UA_RULEHANDLING_ACCEPT; //UA_RULEHANDLING_WARN;
 
 	    	/* config1->applicationDescription.gatewayServerUri = UA_STRING_NULL; */
     		/* config1->applicationDescription.discoveryProfileUri = UA_STRING_NULL; */
@@ -544,26 +545,26 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 		// Certificate Verification that accepts every certificate. Can be overwritten when the policy is specialized.
 		// required for LDS
 //		UA_CertificateVerification_AcceptAll(&config1.certificateVerification);
-		config1.secureChannelPKI.clear(&config1.secureChannelPKI);
+		config1->secureChannelPKI.clear(&config1->secureChannelPKI);
 		UA_ByteString_clear(&certificate);
 		UA_ByteString_clear(&privateKey);
 		for (size_t i = 0; i < trustListSize; i++)
 			UA_ByteString_clear(&trustList[i]);
 
 		// Limits for SecureChannels - required for LDS
-		config1.maxSecureChannels = 400;
-		config1.maxSecurityTokenLifetime = 10 * 60 * 1000; // 10 minutes */
+		config1->maxSecureChannels = 40;
+		config1->maxSecurityTokenLifetime = 10 * 60 * 1000; // 10 minutes */
 
 		// Limits for Sessions - required for LDS
-		config1.maxSessions = 100;
-		config1.maxSessionTimeout = 60 * 60 * 1000;	// 1 hour
+		config1->maxSessions = 100;
+		config1->maxSessionTimeout = 60 * 60 * 1000;	// 1 hour
 
 		// Limits for MonitoredItems - not required for LDS
-		//config1.samplingIntervalLimits = UA_DURATIONRANGE(50.0, 24.0 * 3600.0 * 1000.0);
-		//config1.queueSizeLimits = UA_UINT32RANGE(1, 100);
+		//config1->samplingIntervalLimits = UA_DURATIONRANGE(50.0, 24.0 * 3600.0 * 1000.0);
+		//config1->queueSizeLimits = UA_UINT32RANGE(1, 100);
 
 		// Limits for Discovery - required for LDS
-		config1.discoveryCleanupTimeout = 60 * 60;
+		config1->discoveryCleanupTimeout = 60 * 60;
 
 		UA_ByteString_clear(&certificate);
     		UA_ByteString_clear(&privateKey);
@@ -571,12 +572,16 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
         		UA_ByteString_clear(&trustList[i]);
                 UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "LDS_StartServer.c : after encryption routine");
 	// end encryption routine
-
+/*
 	// start OPCUA LDS Server
 	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "starting OPCUA LDS server ...\n");
 
 	uaLDSServer1 = UA_Server_newWithConfig(&config1);
-
+        {
+                UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Fatal error : Could not create the LDS server.");
+                return (void *)EXIT_FAILURE;
+        }
+*/
         //Add a new namespace to the server => Returns the index of the new namespace i.e. namespaceIndex
         UA_Int16 nsIdx_LDS = UA_Server_addNamespace(uaLDSServer1, "LDS");
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "New Namespace added with Nr. %d", nsIdx_LDS);
