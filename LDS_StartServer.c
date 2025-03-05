@@ -93,6 +93,7 @@ static UA_Boolean allowBrowseNode(UA_Server *server, UA_AccessControl *ac,
                 const UA_NodeId *sessionId, void *sessionContext,
                 const UA_NodeId *nodeId, void *nodeContext);
 */
+/*
 #ifdef UA_ENABLE_HISTORIZING
 static UA_Boolean allowHistoryUpdateUpdateData(UA_Server *server, UA_AccessControl *ac,
 		const UA_NodeId *sessionId, void *sessionContext,
@@ -107,7 +108,7 @@ static UA_Boolean allowHistoryUpdateDeleteRawModified(UA_Server *server, UA_Acce
 		UA_DateTime endTimestamp,
 		bool isDeleteModified);
 #endif
-
+*/
 static volatile UA_Boolean running = true;
 extern int g_argc;
 
@@ -341,7 +342,7 @@ createEndpoint(UA_ServerConfig *conf, UA_EndpointDescription *endpoint,
 void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 {
 	//int sockfd;
-	char* OPCLDSipaddress = argv;
+	//char* OPCLDSipaddress = argv;
 	//char* brokeripaddress = argv[3];
 
 	signal(SIGINT, stopHandler);
@@ -475,7 +476,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
                 config1.accessControl.allowHistoryUpdateUpdateData = allowHistoryUpdateUpdateData;
                 config1.accessControl.allowHistoryUpdateDeleteRawModified = allowHistoryUpdateDeleteRawModified;
                 */
-                UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "added %d user credentials to OPCUA LDS server \n", usernamePasswordsSize);
+                UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "added %d user credentials to OPCUA LDS server \n", (int)usernamePasswordsSize);
         // end userid and password routine
 
                 // Change the configuration
@@ -643,7 +644,7 @@ cleanup:
 
     	UA_Server_run_shutdown(uaLDSServer1);
 
-	return;
+	return (void*)0;
 }
 
 
