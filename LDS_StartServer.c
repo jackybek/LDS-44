@@ -417,7 +417,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 
 			if (retval != UA_STATUSCODE_GOOD)
                 	{
-                        	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartServer.c : error loading Server Configuration");
+                        	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartServer.c : error loading Server Configuration %s", UA_StatusCode_name(retval));
                         	goto cleanup;
                 	}
 			else
@@ -644,7 +644,7 @@ cleanup:
 
     	UA_Server_run_shutdown(uaLDSServer1);
 
-	return (void*)0;
+	return (void*)EXIT_SUCCESS;
 }
 
 
