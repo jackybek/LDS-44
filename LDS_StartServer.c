@@ -624,7 +624,7 @@ cleanup:
 	{
 		UA_Server_run_shutdown(uaLDSServer1);
 		UA_Server_delete(uaLDSServer1); // UA_Server_delete(uaServer);
-		return EXIT_FAILURE;
+		return (void *)EXIT_FAILURE;
 	}
 
 	close(sockfd);
