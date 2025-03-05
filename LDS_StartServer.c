@@ -417,7 +417,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 
 			if (retval != UA_STATUSCODE_GOOD)
                 	{
-                        	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartServer.c : error loading Server Configuration %s", UA_StatusCode_name(retval));
+                        	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartServer.c : error UA_ServerConfig_setDefaultWithSecurityPolicies %s", UA_StatusCode_name(retval));
                         	goto cleanup;
                 	}
 			else
@@ -451,7 +451,7 @@ void* StartOPCUALDSServer(void* x_void_ptr, char* argv)
 		if (!config1)
 		{
 			//return UA_STATUSCODE_BADINVALIDARGUMENT;
-			UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartServer.c : error loading Server Configuration");
+			UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_StartServer.c : error loading Server Configuration %s", UA_StatusCode_name(retval));
 			goto cleanup;
 		}
 		if (config1->nodestore.context == NULL)
