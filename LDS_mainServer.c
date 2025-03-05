@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
 		exit (0);
 	}
 
-        UA_Server *server = UA_Server_new();	// UA_Server_new(config)
+        UA_Server *server = NULL; // UA_Server_new();	// UA_Server_new(config)
 	//UA_ServerConfig *config = UA_Server_getConfig(server); do this in StartOPCUAServer.c
 	//UA_ServerConfig_setDefault(config);	// do this in StartOPCUAServer.c
 
