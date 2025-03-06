@@ -142,18 +142,19 @@ int generateSSCert(UA_Server *uaLDSServer,
 	UA_assert(status == UA_STATUSCODE_GOOD);
 	UA_assert(derPrivKey.length > 0);
 	UA_assert(derCert.length > 0);
+	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Self signed certificate and key generated successfully");
 	
 	UA_ServerConfig *config = UA_Server_getConfig(uaLDSServer);
-
-	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Generating self signed certificate and key");
 	status = UA_ServerConfig_setDefaultWithSecurityPolicies(config, 4840, 
 							&derCert, &derPrivKey,
 							trustList, trustListSize, 
 							issuerList, issuerListSize, 
 							revocationList, revocationListSize);
-	//config->tcpReuseAddr = true;
-	UA_assert(status == UA_STATUSCODE_GOOD);
-	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Self signed certificate and key generated successfully");
+	config->tcpReuseAddr = true;
+	if ( status == UA_STATUSCODE_GOOD )
+		UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Default security policies are set successfully");
+	else
+		UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Error setting security policies : %s", UA_StatusCode_name(status));
 	
 	UA_ByteString_clear(&derCert);
 	UA_ByteString_clear(&derPrivKey);
