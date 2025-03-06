@@ -108,5 +108,5 @@ int configureServer(UA_Server *uaLDSServer)
     // Limits for Discovery - required for LDS
     config->discoveryCleanupTimeout = 60 * 60;
 
-	reuturn UA_STATUSCODE_GOOD;
+	return UA_STATUSCODE_GOOD;
 }
