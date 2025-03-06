@@ -103,8 +103,8 @@ int generateSSCert(UA_Server *uaLDSServer,
 	UA_ByteString derPrivKey;
 	UA_ByteString derCert;
 
-	UA_String subject[3] = {UA_STRING_STATIC("C=SG",
-				UA_STRING_STATIC("S=Singapore",
+	UA_String subject[3] = {UA_STRING_STATIC("C=SG"),
+				UA_STRING_STATIC("S=Singapore"),
 				UA_STRING_STATUC("CN=lds.virtualskies.com.sg") };
 	
 	/*
