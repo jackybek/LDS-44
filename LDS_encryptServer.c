@@ -17,9 +17,9 @@ int encryptServer(UA_Server *uaLDSServer)
 	UA_ServerConfig *config = UA_Server_getConfig(uaLDSServer);
 	
 	const char *env_sslcertificateloc = getenv("SSLCERTIFICATELOC");
-    UA_ByteString certificate = loadFile(env_sslcertificateloc);
+    	UA_ByteString certificate = loadFile(env_sslcertificateloc);
 	const char *env_privatekeyloc = getenv("PRIVATEKEYLOC");
-    UA_ByteString privateKey = loadFile(env_privatekeyloc);
+   	UA_ByteString privateKey = loadFile(env_privatekeyloc);
 	
 	if (certificate.length == 0)
 		UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : cannot find %s", env_sslcertificateloc);
@@ -30,40 +30,46 @@ int encryptServer(UA_Server *uaLDSServer)
 	UA_ByteString *trustList = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
 	UA_ByteString_copy(&certificate, &trustList[0]);
 	size_t trustListSize = 1;
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Successfully loaded LDS trustlist");
+    	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Successfully loaded LDS trustlist");
 	// Loading of a issuer list, not used in this application
-    UA_ByteString *issuerList = NULL;
+    	UA_ByteString *issuerList = NULL;
 	size_t issuerListSize = 0;
 	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : issueList is not supported");
 	// Loading of a revocation list currently unsupported
 	UA_ByteString *revocationList = NULL;
-    size_t revocationListSize = 0;
+    	size_t revocationListSize = 0;
 	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : revocationList is not supported");	
 	
 	
 	if ( (certificate.length != 0) && (privateKey.length != 0) ) 
+	{
 		status = UA_ServerConfig_setDefaultWithSecurityPolicies(config, 4840,                  
                                                        &certificate, &privateKey,
                                                        trustList, trustListSize,
                                                        issuerList, issuerListSize,
                                                        revocationList, revocationListSize);
-
+		if ( !UA_assert(status == UA_STATUS_GOOD) )
+			UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
+        		"LDS_encrypterver.c : Could not initiaise server with default security policues with error code %s",
+        		UA_StatusCode_name(status));
+		else
+			UA_LOG_
+	}
 	else
+	{
 		status = generateSSCert(uaLDSServer,
 				trustList, trustListSize,
                                 issuerList, issuerListSize,
                                 revocationList, revocationListSize);
 		
-	UA_assert(status == UA_STATUSCODE_GOOD);
+		UA_assert(status == UA_STATUSCODE_GOOD);
 
-
-	
 	// add the security policies
 	status = UA_ServerConfig_addSecurityPolicyBasic256Sha256(config, &certificate, &privateKey);
-    if(status != UA_STATUSCODE_GOOD) {
+    	if(status != UA_STATUSCODE_GOOD) {
 		UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
-        "LDS_encrypterver.c : Could not add SecurityPolicy#Basic256Sha256 with error code %s",
-        UA_StatusCode_name(status));
+        	"LDS_encrypterver.c : Could not add SecurityPolicy#Basic256Sha256 with error code %s",
+        	UA_StatusCode_name(status));
     }
 
     status = UA_ServerConfig_addSecurityPolicyAes256Sha256RsaPss(config, &certificate, &privateKey);
@@ -103,7 +109,7 @@ int generateSSCert(UA_Server *uaLDSServer,
 	
 	UA_UInt32 lenSubject = 7;
 	UA_String subjectAltName[2] = {UA_STRING_STATIC("DNS.1:localhost"),
-					UA_STRING_STATIC("DNS.2:lds.virtualskies.com.sg") };
+				       UA_STRING_STATIC("DNS.2:lds.virtualskies.com.sg") };
 	UA_UInt32 lenSubjectAltName = 2;
 	
 	UA_KeyValueMap *kvm = UA_KeyValueMap_new();
