@@ -53,7 +53,7 @@ int encryptServer(UA_Server *uaLDSServer)
                                     issuerList, issuerListSize,
                                     revocationList, revocationListSize);
 		
-	ck_assert(status == UA_STATUSCODE_GOOD);
+	UA_assert(status == UA_STATUSCODE_GOOD);
 
 
 	
@@ -73,13 +73,13 @@ int encryptServer(UA_Server *uaLDSServer)
     }
 
     status = UA_ServerConfig_addSecurityPolicyAes128Sha256RsaOaep(config, &certificate, &privateKey);
-    if(retval != UA_STATUSCODE_GOOD) {
+    if(status != UA_STATUSCODE_GOOD) {
         UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
         "LDS_encrypterver.c : Could not add SecurityPolicy#Aes128Sha256RsaOaep with error code %s",
         UA_StatusCode_name(status));
     }
 	
-	UA_ByteString_clear(&trustList);
+	UA_ByteString_clear(trustList);
 	return status;
 }
 	
