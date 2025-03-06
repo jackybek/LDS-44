@@ -140,6 +140,6 @@ cleanup:
                 UA_Server_run_iterate(uaLDSServer, true);
 
         UA_Server_run_shutdown(uaLDSServer);
-		UA_Server_delete(uaServer);
+		UA_Server_delete(uaLDSServer);
         return EXIT_SUCCESS;
 }
