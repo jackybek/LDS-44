@@ -17,22 +17,24 @@ int configureServer(UA_Server *);
 
 int configureServer(UA_Server *uaLDSServer)
 {
-	UA_StatusCode status;
+    UA_StatusCode status;
+    UA_ServerConfig *config = UA_Server_getConfig(uaLDSServer);
+
+    config->accessControl.clear(&config->accessControl);
+    UA_CertificateVerification verifyX509;
+    status = UA_AccessControl_default(&config, UA_FALSE, &verifyX509, &config1.securityPolicies[config1.securityPoliciesSize-1].policyUri, 2, logins);
+    if (retval != UA_STATUSCODE_GOOD)
+	return EXIT_FAILURE;
+    else
+	    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "SV_StartOPCUAServer.c : adding 2 user credentials to OPCUA server (without anonymous) : %d", status);
+
+
+    if (config->nodestore.context == NULL)
+	UA_Nodestore_HashMap(&config->nodestore);
 	
-	UA_ServerConfig *config = UA_Server_getConfig(uaLDSServer);
-
-	if (config->nodestore.context == NULL)
-		UA_Nodestore_HashMap(&config->nodestore);
-
-    config->accessControl.clear(&config1->accessControl);
-    UA_AccessControl_default(config, UA_FALSE, 
-				&config->securityPolicies[config->securityPoliciesSize-1].policyUri, 
-				usernamePasswordsSize, logins>
-				
     config->shutdownDelay = 0; //5000.0; // millisecond
-                config1->securityPolicyNoneDiscoveryOnly = UA_FALSE;
+    config1->securityPolicyNoneDiscoveryOnly = UA_FALSE;
     
-
     // Server Description
     UA_BuildInfo_clear(&config1->buildInfo);
     const char* env_product_uri = getenv("PRODUCT_URI");
@@ -47,7 +49,7 @@ int configureServer(UA_Server *uaLDSServer)
     config->buildInfo.softwareVersion = UA_STRING_ALLOC(VERSION(UA_OPEN62541_VER_MAJOR, UA_OPEN62541_VER_MINOR,
                                                 UA_OPEN62541_VER_PATCH, UA_OPEN62541_VER_LABEL));
 												
-	config->buildInfo.buildDate = UA_DateTime_now();
+    config->buildInfo.buildDate = UA_DateTime_now();
     config->buildInfo.buildNumber = UA_STRING_ALLOC(__DATE__ " " __TIME__);
 
     UA_ApplicationDescription_clear(&config->applicationDescription);
@@ -84,7 +86,7 @@ int configureServer(UA_Server *uaLDSServer)
 
     // Certificate Verification that accepts every certificate. Can be overwritten when the policy is specialized.
     // required for LDS
-	UA_CertificateVerification_AcceptAll(&config.certificateVerification);
+    UA_CertificateVerification_AcceptAll(&config.certificateVerification);
     config->secureChannelPKI.clear(&config->secureChannelPKI);
     //UA_ByteString_clear(&certificate);
     //UA_ByteString_clear(&privateKey);
