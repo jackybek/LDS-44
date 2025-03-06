@@ -9,7 +9,7 @@ int configureServer(UA_Server *);
 char * discovery_url = NULL;
 static void stopHandler(int);
 
-
+static volatile UA_Boolean running = true;
 static void stopHandler(int sig)
 {
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "received ctrl-c");
