@@ -151,6 +151,7 @@ int generateSSCert(UA_Server *uaLDSServer,
 							revocationList, revocationListSize);
 	config->tcpReuseAddr = true;
 	UA_assert(status == UA_STATUSCODE_GOOD);
+	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Self signed certificate and key generated successfully");
 	
 	UA_ByteString_clear(&derCert);
 	UA_ByteString_clear(&derPrivKey);
