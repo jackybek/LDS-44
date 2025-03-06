@@ -58,6 +58,31 @@ serverOnNetworkCallback(const UA_ServerOnNetwork *serverOnNetwork, UA_Boolean is
     discovery_url[serverOnNetwork->discoveryUrl.length] = 0;
 }
 
+/*
+ * Get the endpoint from the server, where we can call RegisterServer2 (or RegisterServer).
+ * This is normally the endpoint with highest supported encryption mode.
+ *
+ * @param discoveryServerUrl The discovery url from the remote server
+ * @return The endpoint description (which needs to be freed) or NULL
+ * https://github.com/open62541/open62541/blob/master/examples/discovery/server_multicast.c
+ */
+static
+UA_EndpointDescription *getRegisterEndpointFromServer(const char *discoveryServerUrl) {
+    UA_Client *client = UA_Client_new();
+    UA_ClientConfig_setDefault(UA_Client_getConfig(client));
+    UA_EndpointDescription *endpointArray = NULL;
+    size_t endpointArraySize = 0;
+    UA_StatusCode retval = UA_Client_getEndpoints(client, discoveryServerUrl,
+                                                  &endpointArraySize, &endpointArray);
+    if(retval != UA_STATUSCODE_GOOD) {
+        UA_Array_delete(endpointArray, endpointArraySize,
+                        &UA_TYPES[UA_TYPES_ENDPOINTDESCRIPTION]);
+        UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
+                     "GetEndpoints failed with %s", UA_StatusCode_name(retval));
+        UA_Client_delete(client);
+        return NULL;
+    }
+
 int main(int argc, char *argv[])
 {
      if (argc != 2)
