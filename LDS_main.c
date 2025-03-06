@@ -1,7 +1,18 @@
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/server.h>
 #include <open62541/server_config_default.h>
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <pthread.h>
 
 int main(int argc, char** argv);
 int encryptServer(UA_Server *);
