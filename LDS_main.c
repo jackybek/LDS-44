@@ -17,14 +17,45 @@
 int main(int argc, char** argv);
 int encryptServer(UA_Server *);
 int configureServer(UA_Server *);
-char * discovery_url = NULL;
 static void stopHandler(int);
+static void serverOnNetworkCallback(const UA_ServerOnNetwork *, UA_Boolean, UA_Boolean, void *);
 
+char * discovery_url = NULL;
 static volatile UA_Boolean running = true;
+
 static void stopHandler(int sig)
 {
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "received ctrl-c");
         running = false;
+}
+
+static void
+serverOnNetworkCallback(const UA_ServerOnNetwork *serverOnNetwork, UA_Boolean isServerAnnounce,
+			UA_Boolean isTxtReceived, void *data)
+{
+     if(discovery_url != NULL || !isServerAnnounce) {
+        UA_LOG_DEBUG(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
+                     "serverOnNetworkCallback called, but discovery URL "
+                     "already initialized or is not announcing. Ignoring.");
+        return; // we already have everything we need or we only want server announces
+    }
+
+    if(!isTxtReceived)
+        return; // we wait until the corresponding TXT record is announced.
+                // Problem: how to handle if a Server does not announce the
+                // optional TXT?
+
+    // here you can filter for a specific LDS server, e.g. call FindServers on
+    // the serverOnNetwork to make sure you are registering with the correct
+    // LDS. We will ignore this for now
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Another server announced itself on %.*s",
+                (int)serverOnNetwork->discoveryUrl.length, serverOnNetwork->discoveryUrl.data);
+
+    if(discovery_url != NULL)
+        UA_free(discovery_url);
+    discovery_url = (char*)UA_malloc(serverOnNetwork->discoveryUrl.length + 1);
+    memcpy(discovery_url, serverOnNetwork->discoveryUrl.data, serverOnNetwork->discoveryUrl.length);
+    discovery_url[serverOnNetwork->discoveryUrl.length] = 0;
 }
 
 int main(int argc, char *argv[])
