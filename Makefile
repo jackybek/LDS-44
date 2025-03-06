@@ -9,7 +9,7 @@ CFLAGS3=-g -pass-exit-codes
 DEPS=
 LIBS=-lm -lrt -lpthread  -lcrypto -lssl -lmbedcrypto -lmbedtls -lmbedx509 -lwebsockets
 #OBJ=LDS_mainServer.o LDS_StartServer.o
-OBJ=LDS_Misc.o LDS_encryptServer.o LDS_configureServer.o LDS_main.o
+OBJ=LDS_Misc.o LDS_configureServer.o LDS_encryptServer.o LDS_main.o
 
 ODIR=obj
 LDIR1=-L/usr/local/lib/
