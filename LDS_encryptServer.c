@@ -53,7 +53,9 @@ int encryptServer(UA_Server *uaLDSServer)
         		"LDS_encrypterver.c : Could not initiaise server with default security policues with error code %s",
         		UA_StatusCode_name(status));
 		else
-			UA_LOG_
+			UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
+        		"LDS_encrypterver.c : Server initialised with default security policues with error code %s",
+        		UA_StatusCode_name(status));
 	}
 	else
 	{
