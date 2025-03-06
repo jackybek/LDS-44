@@ -6,6 +6,7 @@
 #include <open62541/plugin/nodestore_default.h>
 #include <stdio.h>
 
+UA_ByteString loadFile(const char *const);
 int encryptServer(UA_Server *);
 int generateSSCert(UA_Server *, UA_ByteString *, size_t, UA_ByteString *, size_t, UA_ByteString *, size_t);
 
