@@ -38,34 +38,34 @@ int main(int argc, char *argv[])
      signal(SIGINT, stopHandler);
      signal(SIGTERM, stopHandler);
 	 
-	 UA_Server *uaLDSServer = UA_Server_new();
-     UA_ServerConfig *config = UA_Server_getConfig(uaLDSServer);
-     UA_ServerConfig_setMinimal(config, 4840, NULL);
+	UA_Server *uaLDSServer = UA_Server_new();
+     	UA_ServerConfig *config = UA_Server_getConfig(uaLDSServer);
+     	UA_ServerConfig_setMinimal(config, 4840, NULL);
 
      int status = encryptServer(uaLDSServer);
 	 if (status != UA_STATUSCODE_GOOD)
 	 {
-		UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not encrypt the LDS server : %s", UA_StatusCode_name(retval));
+		UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not encrypt the LDS server : %s", UA_StatusCode_name(status));
 		return EXIT_FAILURE;
 	 }
 
 	 status = configureServer(uaLDSServer);
 	 if (status != UA_STATUSCODE_GOOD)
 	 {
-		UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not configure the LDS server : %s", UA_StatusCode_name(retval));
+		UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not configure the LDS server : %s", UA_StatusCode_name(status));
 		return EXIT_FAILURE;
 	 }
 	 
 	//Add a new namespace to the server => Returns the index of the new namespace i.e. namespaceIndex
-    	UA_Int16 nsIdx_LDS = UA_Server_addNamespace(uaLDSServer1, "LDS");
+    	UA_Int16 nsIdx_LDS = UA_Server_addNamespace(uaLDSServer, "LDS");
     	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "New Namespace added with Nr. %d", nsIdx_LDS);
 
-    	status = UA_Server_run_startup(uaLDSServer1);
-    	UA_Server_setServerOnNetworkCallback(uaLDSServer1, serverOnNetworkCallback, NULL);
+    	status = UA_Server_run_startup(uaLDSServer);
+    	UA_Server_setServerOnNetworkCallback(uaLDSServer, serverOnNetworkCallback, NULL);
     	if (status != UA_STATUSCODE_GOOD)
     	{
-        	UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not start the LDS server. StatusCode %s", UA_StatusCode_name(retval));
-        	UA_Server_delete(uaLDSServer1);
+        	UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not start the LDS server. StatusCode %s", UA_StatusCode_name(status));
+        	UA_Server_delete(uaLDSServer);
         	goto cleanup;
     	}
     	else
@@ -111,6 +111,4 @@ cleanup:
         UA_Server_run_shutdown(uaLDSServer);
 		UA_Server_delete(uaServer);
         return EXIT_SUCCESS;
-
-	 
 }
