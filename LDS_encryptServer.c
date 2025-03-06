@@ -134,6 +134,7 @@ int generateSSCert(UA_Server *uaLDSServer,
 				(void *)&keyLength, &UA_TYPES[UA_TYPES_UINT16]);
 							
 	// creates the certificate and keys
+	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Generating self signed certificate and key");
 	UA_StatusCode status = UA_CreateCertificate(
 						UA_Log_Stdout, subject, lenSubject, subjectAltName, lenSubjectAltName,
 						UA_CERTIFICATEFORMAT_DER, kvm, &derPrivKey, &derCert);
