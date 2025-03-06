@@ -6,6 +6,10 @@
 #include <open62541/plugin/nodestore_default.h>
 #include <stdio.h>
 
+#define STRINGIFY(arg) #arg
+#define VERSION(MAJOR, MINOR, PATCH, LABEL) \
+    STRINGIFY(MAJOR) "." STRINGIFY(MINOR) "." STRINGIFY(PATCH) LABEL
+
 // the following is required for Unified Automation UAExpert
 static const size_t usernamePasswordsSize = 2;
 static UA_UsernamePasswordLogin logins[2] = {
