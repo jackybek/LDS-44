@@ -50,9 +50,9 @@ int encryptServer(UA_Server *uaLDSServer)
 
 	else
 		status = generateSSCert(uaLDSServer,
-									trustList, trustListSize,
-                                    issuerList, issuerListSize,
-                                    revocationList, revocationListSize);
+				trustList, trustListSize,
+                                issuerList, issuerListSize,
+                                revocationList, revocationListSize);
 		
 	UA_assert(status == UA_STATUSCODE_GOOD);
 
