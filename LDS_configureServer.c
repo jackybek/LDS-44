@@ -10,7 +10,8 @@
 static const size_t usernamePasswordsSize = 2;
 static UA_UsernamePasswordLogin logins[2] = {
         {UA_STRING_STATIC("jackybek"), UA_STRING_STATIC("thisisatestpassword24")},
-        {UA_STRING_STATIC("admin"),UA_STRING_STATIC("defaultadminpassword24")} };
+	{UA_STRING_STATIC("admin"),UA_STRING_STATIC("defaultadminpassword24")}
+};
 
 int configureServer(UA_Server *);
 
