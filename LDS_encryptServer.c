@@ -127,7 +127,7 @@ int generateSSCert(UA_Server *uaLDSServer,
 	UA_ServerConfig *config = UA_Server_getConfig(uaLDSServer);
 
 	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Generating self signed certificate and key");
-	status = UA_ServerConfigsetDefaultWithSecurityPolicies(config, 4840, 
+	status = UA_ServerConfig_setDefaultWithSecurityPolicies(config, 4840, 
 							&derCert, &derPrivKey,
 							trustList, trustListSize, 
 							issuerList, issuerListSize, 
