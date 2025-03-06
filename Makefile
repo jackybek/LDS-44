@@ -8,7 +8,7 @@ CFLAGS2=-I$(HOME) -I$(HOME)include/ -I$(HOME)plugins/ -I$(HOME)src/ -I$(HOME)bui
 CFLAGS3=-g -pass-exit-codes
 DEPS=
 LIBS=-lm -lrt -lpthread  -lcrypto -lssl -lmbedcrypto -lmbedtls -lmbedx509 -lwebsockets
-OBJ=LDS_StartServer.o LDS_mainServer.o
+OBJ=LDS_Misc.o LDS_encryptServer.o LDS_configureServer.o LDS_main.o
 
 ODIR=obj
 LDIR1=-L/usr/local/lib/
