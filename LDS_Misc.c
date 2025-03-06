@@ -9,9 +9,10 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <open62541/server_config_default.h>
 
 UA_ByteString loadFile(const char *const);
-static void erverOnNetworkCallback(const UA_ServerOnNetwork *, UA_Boolean, UA_Boolean, void *)
+static void serverOnNetworkCallback(const UA_ServerOnNetwork *, UA_Boolean, UA_Boolean, void *)
 
 UA_ByteString loadFile(const char *const path)
 {
