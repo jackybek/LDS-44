@@ -154,13 +154,13 @@ int main(int argc, char *argv[])
 	  	*/
         	UA_EndpointDescription *endpointRegister = getRegisterEndpointFromServer(discovery_url);
         	UA_free(discovery_url);
-        if(endpointRegister == NULL || endpointRegister->securityMode == UA_MESSAGESECURITYMODE_INVALID)
-        {
-            UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
-                    "Could not find any suitable endpoints on discovery server");
-            goto cleanup;
-        }
-		
+        	if(endpointRegister == NULL || endpointRegister->securityMode == UA_MESSAGESECURITYMODE_INVALID)
+        	{
+            		UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
+                    	"Could not find any suitable endpoints on discovery server");
+            		goto cleanup;
+        	}
+	}	
 cleanup:
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "OPCUA LDS Server shutting down");
         if (uaLDSServer)
