@@ -92,6 +92,7 @@ UA_EndpointDescription *getRegisterEndpointFromServer(const char *discoveryServe
         UA_Client_delete(client);
         return NULL;
     }
+}
 
 int main(int argc, char *argv[])
 {
