@@ -51,7 +51,7 @@ int encryptServer(UA_Server *uaLDSServer)
                                                        trustList, trustListSize,
                                                        issuerList, issuerListSize,
                                                        revocationList, revocationListSize);
-		UA_assert(status == UA_STATUSCODE_GOOD);
+		
 		if (status != UA_STATUSCODE_GOOD)
 			UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
         		"LDS_encrypterver.c : Could not initiaise server with default security policues with error code %s",
