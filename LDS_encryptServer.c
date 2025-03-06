@@ -4,6 +4,7 @@
 #include <open62541/plugin/securitypolicy.h>
 #include <open62541/plugin/accesscontrol_default.h>
 #include <open62541/plugin/nodestore_default.h>
+#include <open62541/plugin/certificategroup_default.h>
 #include <stdio.h>
 
 UA_ByteString loadFile(const char *const);
@@ -100,11 +101,11 @@ int generateSSCert(UA_Server *uaLDSServer,
                    UA_ByteString *revocationList, size_t revocationListSize)
 {	
 	
-	UA_ByteString derPrivKey;
-	UA_ByteString derCert;
+	UA_ByteString derPrivKey = UA_BYTESTRING_NULL;
+	UA_ByteString derCert = UA_BYTESTRING;
 
 	UA_String subject[3] = {UA_STRING_STATIC("C=SG"),
-				UA_STRING_STATIC("S=Singapore"),
+				UA_STRING_STATIC("O=Virtual Skies"),
 				UA_STRING_STATIC("CN=lds.virtualskies.com.sg") };
 	
 	/*
@@ -125,12 +126,11 @@ int generateSSCert(UA_Server *uaLDSServer,
 	UA_KeyValueMap *kvm = UA_KeyValueMap_new();
 	UA_UInt16 expiresIn = 3650;
 	UA_KeyValueMap_setScalar(kvm, UA_QUALIFIEDNAME(0, "expires-in-days"),
-							(void *)&expiresIn , &UA_TYPES[UA_TYPES_UINT16]);
+				(void *)&expiresIn , &UA_TYPES[UA_TYPES_UINT16]);
 	UA_UInt16 keyLength = 2048;
 	UA_KeyValueMap_setScalar(kvm, UA_QUALIFIEDNAME(0, "key-size-bits"),
-							(void *)&keyLength, &UA_TYPES[UA_TYPES_UINT16]);
+				(void *)&keyLength, &UA_TYPES[UA_TYPES_UINT16]);
 							
-	
 	// creates the certificate and keys
 	UA_StatusCode status = UA_CreateCertificate(
 						UA_Log_Stdout, subject, lenSubject, subjectAltName, lenSubjectAltName,
