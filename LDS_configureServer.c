@@ -22,8 +22,8 @@ int configureServer(UA_Server *uaLDSServer)
 
     config->accessControl.clear(&config->accessControl);
     UA_CertificateVerification verifyX509;
-    status = UA_AccessControl_default(config, UA_FALSE, &config.securityPolicies[config.securityPoliciesSize-1].policyUri, 2, logins);
-    if (retval != UA_STATUSCODE_GOOD)
+    status = UA_AccessControl_default(config, UA_FALSE, &config->securityPolicies[config.securityPoliciesSize-1].policyUri, usernamePasswordsSize, logins);
+    if (status != UA_STATUSCODE_GOOD)
 	return EXIT_FAILURE;
     else
 	    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "SV_StartOPCUAServer.c : adding 2 user credentials to OPCUA server (without anonymous) : %d", status);
@@ -33,7 +33,7 @@ int configureServer(UA_Server *uaLDSServer)
 	UA_Nodestore_HashMap(&config->nodestore);
 	
     config->shutdownDelay = 0; //5000.0; // millisecond
-    config1->securityPolicyNoneDiscoveryOnly = UA_FALSE;
+    config->securityPolicyNoneDiscoveryOnly = UA_FALSE;
     
     // Server Description
     UA_BuildInfo_clear(&config1->buildInfo);
@@ -86,7 +86,7 @@ int configureServer(UA_Server *uaLDSServer)
 
     // Certificate Verification that accepts every certificate. Can be overwritten when the policy is specialized.
     // required for LDS
-    UA_CertificateVerification_AcceptAll(&config.certificateVerification);
+    UA_CertificateVerification_AcceptAll(&config->certificateVerification);
     config->secureChannelPKI.clear(&config->secureChannelPKI);
     //UA_ByteString_clear(&certificate);
     //UA_ByteString_clear(&privateKey);
