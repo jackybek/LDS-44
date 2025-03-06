@@ -43,49 +43,50 @@ int main(int argc, char *argv[])
      UA_ServerConfig_setMinimal(config, 4840, NULL);
 
      int retval = encryptServer(uaLDSServer);
-	 if retval != UA_STATUSCODE_GOOD
+	 if (retval != UA_STATUSCODE_GOOD)
 	 {
 		UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not encrypt the LDS server : %s", UA_StatusCode_name(retval));
 		return EXIT_FAILURE;
 	 }
 
 	 int retval = configureServer(uaLDSServer);
-	 if retval != UA_STATUSCODE_GOOD
+	 if (retval != UA_STATUSCODE_GOOD)
 	 {
 		UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not configure the LDS server : %s", UA_StatusCode_name(retval));
 		return EXIT_FAILURE;
 	 }
 	 
 	//Add a new namespace to the server => Returns the index of the new namespace i.e. namespaceIndex
-    UA_Int16 nsIdx_LDS = UA_Server_addNamespace(uaLDSServer1, "LDS");
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "New Namespace added with Nr. %d", nsIdx_LDS);
+    	UA_Int16 nsIdx_LDS = UA_Server_addNamespace(uaLDSServer1, "LDS");
+    	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "New Namespace added with Nr. %d", nsIdx_LDS);
 
-    retval = UA_Server_run_startup(uaLDSServer1);
-    UA_Server_setServerOnNetworkCallback(uaLDSServer1, serverOnNetworkCallback, NULL);
-    if (retval != UA_STATUSCODE_GOOD)
-    {
-        UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not start the LDS server. StatusCode %s", UA_StatusCode_name(retval));
-        UA_Server_delete(uaLDSServer1);
-        goto cleanup;
-    }
-    else
-    {
-        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "OPCUA LDS server started successfully. Waiting for announcement of LDS Server ...\n");
-        while (running && discovery_url == NULL)
-            UA_Server_run_iterate(uaLDSServer, true);
-        if (!running)
-        {
-            UA_Server_delete(uaLDSServer);
-            UA_free(discovery_url);
-            goto cleanup;
-        }
-        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "LDS-ME server found on %s", discovery_url);
+    	retval = UA_Server_run_startup(uaLDSServer1);
+    	UA_Server_setServerOnNetworkCallback(uaLDSServer1, serverOnNetworkCallback, NULL);
+    	if (retval != UA_STATUSCODE_GOOD)
+    	{
+        	UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not start the LDS server. StatusCode %s", UA_StatusCode_name(retval));
+        	UA_Server_delete(uaLDSServer1);
+        	goto cleanup;
+    	}
+    	else
+    	{
+        	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "OPCUA LDS server started successfully. Waiting for announcement of LDS Server ...\n");
+        	while (running && discovery_url == NULL)
+            		UA_Server_run_iterate(uaLDSServer, true);
+        	if (!running)
+        	{
+            		UA_Server_delete(uaLDSServer);
+            		UA_free(discovery_url);
+            		goto cleanup;
+        	}
+        	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "LDS-ME server found on %s", discovery_url);
 
-        /* Check if the server supports sign and encrypt. OPC Foundation LDS
-         * requires an encrypted session for RegisterServer call, our server
-         * currently uses encrpytion optionally */
-        UA_EndpointDescription *endpointRegister = getRegisterEndpointFromServer(discovery_url);
-        UA_free(discovery_url);
+        	/* Check if the server supports sign and encrypt. OPC Foundation LDS
+         	 * requires an encrypted session for RegisterServer call, our server
+	         * currently uses encrpytion optionally 
+	  	*/
+        	UA_EndpointDescription *endpointRegister = getRegisterEndpointFromServer(discovery_url);
+        	UA_free(discovery_url);
         if(endpointRegister == NULL || endpointRegister->securityMode == UA_MESSAGESECURITYMODE_INVALID)
         {
             UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
