@@ -65,7 +65,8 @@ int encryptServer(UA_Server *uaLDSServer)
                                 revocationList, revocationListSize);
 		
 		UA_assert(status == UA_STATUSCODE_GOOD);
-
+	}
+	
 	// add the security policies
 	status = UA_ServerConfig_addSecurityPolicyBasic256Sha256(config, &certificate, &privateKey);
     	if(status != UA_STATUSCODE_GOOD) {
