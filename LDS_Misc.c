@@ -1,15 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <pthread.h>
-
+//#include "open62541.h"
+//#include "SV_NewMonitor.h"
 //#include <open62541/plugin/network.h>
 #include <open62541/client_highlevel.h>
 #include <open62541/plugin/log_stdout.h>
@@ -21,6 +11,18 @@
 //#include <open62541/plugin/pki_default.h>
 #include <open62541/server.h>
 #include <open62541/server_config_default.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <pthread.h>
 
 UA_ByteString loadFile(const char *const);
 
