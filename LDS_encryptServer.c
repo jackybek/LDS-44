@@ -151,12 +151,13 @@ int generateSSCert(UA_Server *uaLDSServer,
 							trustList, trustListSize, 
 							issuerList, issuerListSize, 
 							revocationList, revocationListSize);
-	config->tcpReuseAddr = true;
+
 	if ( status == UA_STATUSCODE_GOOD )
 		UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Default security policies are set successfully");
 	else
 		UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Error setting security policies : %s", UA_StatusCode_name(status));
-	
+
+	// config->tcpReuseAddr = true;
 	UA_ByteString_clear(&derCert);
 	UA_ByteString_clear(&derPrivKey);
 	
