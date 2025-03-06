@@ -72,7 +72,7 @@ int encryptServer(UA_Server *uaLDSServer)
         UA_StatusCode_name(status));
     }
 
-    retval = UA_ServerConfig_addSecurityPolicyAes128Sha256RsaOaep(config, &certificate, &privateKey);
+    status = UA_ServerConfig_addSecurityPolicyAes128Sha256RsaOaep(config, &certificate, &privateKey);
     if(retval != UA_STATUSCODE_GOOD) {
         UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
         "LDS_encrypterver.c : Could not add SecurityPolicy#Aes128Sha256RsaOaep with error code %s",
@@ -92,15 +92,14 @@ int generateSSCert(UA_Server *uaLDSServer,
 	UA_ByteString derPrivKey = UA_ByteString_NULL;
 	UA_ByteString derCert = UA_ByteString_NULL;
 	
-	UA_String subject[7] = {
-							UA_STRING_STATIC("C=SG"),
-							UA_STRING_STATIC("S=Singapore"),
-							UA_STRING_STATIC("LO=Singapore"),
-							UA_STRING_STATIC("O=Virtual Skies"),
-							UA_STRING_STATIC("U=IT"),
-							UA_STRING_STATIC("CN=lds.virtualskies.com.sg")
-							UA_STRING_STATIC("EM=jacky81100@yahoo.com")
-							}
+	UA_String subject[7] = {UA_STRING_STATIC("C=SG"),
+				UA_STRING_STATIC("S=Singapore"),
+				UA_STRING_STATIC("LO=Singapore"),
+				UA_STRING_STATIC("O=Virtual Skies"),
+				UA_STRING_STATIC("U=IT"),
+				UA_STRING_STATIC("CN=lds.virtualskies.com.sg"),
+				UA_STRING_STATIC("EM=jacky81100@yahoo.com")
+				}
 	UA_UInt32 lenSubject = 7;
 	
 	UA_String subjectAltName[2] = {
@@ -119,7 +118,7 @@ int generateSSCert(UA_Server *uaLDSServer,
 	
 	// creates the certificate and keys
 	UA_StatusCode status = UA_CreateCertificate(
-						UA_Log_Stdout, subject, leSubject, SubjectAltName, lenSubjectAltName,
+						UA_Log_Stdout, subject, lenSubject, subjectAltName, lenSubjectAltName,
 						UA_CERTIFICATEFORMAT_DER, kvm, &derPrivKey, &derCert);
 	UA_KeyValueMap_delete(kvm);
 	
