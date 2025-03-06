@@ -1,6 +1,6 @@
 HOME=/root/open62541/
 CC=gcc
-CFLAGS1=-g -std=c99 -v -Wall
+CFLAGS1=-g -std=c99 -v -Wall -Werror
 #CC=g++
 #CFLAGS1=-x c++ -std=c++98 -v -fpermissive -Wno-literal-suffix -Wno-write-strings -Wno-long-long -Wno-return-type
 CFLAGS2=-I$(HOME) -I$(HOME)include/ -I$(HOME)plugins/ -I$(HOME)src/ -I$(HOME)build/src_generated/ \
