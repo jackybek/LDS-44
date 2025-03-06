@@ -133,7 +133,7 @@ int generateSSCert(UA_Server *uaLDSServer,
 							issuerList, issuerListSize, 
 							revocationList, revocationListSize);
 	config->tcpReuseAddr = true;
-	ua_assert(status == UA_STATUSCODE_GOOD);
+	UA_assert(status == UA_STATUSCODE_GOOD);
 	
 	UA_ByteString_clear(&derCert);
 	UA_ByteString_clear(&derPrivKey);
