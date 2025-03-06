@@ -120,9 +120,9 @@ int generateSSCert(UA_Server *uaLDSServer,
 						UA_CERTIFICATEFORMAT_DER, kvm, &derPrivKey, &derCert);
 	UA_KeyValueMap_delete(kvm);
 	
-	ck_assert(status == UA_STATUSCODE_GOOD);
-	ck_assert(derPrivKey.length > 0);
-	ck_assert(derCert.length > 0);
+	ua_assert(status == UA_STATUSCODE_GOOD);
+	ua_assert(derPrivKey.length > 0);
+	ua_assert(derCert.length > 0);
 	
 	UA_ServerConfig *config = UA_Server_getConfig(uaLDSServer);
 
@@ -133,7 +133,7 @@ int generateSSCert(UA_Server *uaLDSServer,
 							issuerList, issuerListSize, 
 							revocationList, revocationListSize);
 	config->tcpReuseAddr = true;
-	ck_assert(status == UA_STATUSCODE_GOOD);
+	ua_assert(status == UA_STATUSCODE_GOOD);
 	
 	UA_ByteString_clear(&derCert);
 	UA_ByteString_clear(&derPrivKey);
