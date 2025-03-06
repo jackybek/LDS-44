@@ -22,7 +22,7 @@ int configureServer(UA_Server *uaLDSServer)
 
     config->accessControl.clear(&config->accessControl);
     UA_CertificateVerification verifyX509;
-    status = UA_AccessControl_default(config, UA_FALSE, &config->securityPolicies[config.securityPoliciesSize-1].policyUri, usernamePasswordsSize, logins);
+    status = UA_AccessControl_default(config, UA_FALSE, &config->securityPolicies[config->securityPoliciesSize-1].policyUri, usernamePasswordsSize, logins);
     if (status != UA_STATUSCODE_GOOD)
 	return EXIT_FAILURE;
     else
@@ -36,7 +36,7 @@ int configureServer(UA_Server *uaLDSServer)
     config->securityPolicyNoneDiscoveryOnly = UA_FALSE;
     
     // Server Description
-    UA_BuildInfo_clear(&config1->buildInfo);
+    UA_BuildInfo_clear(&config->buildInfo);
     const char* env_product_uri = getenv("PRODUCT_URI");
     const char* env_manufacturer_name = getenv("MANUFACTURER_NAME");
     const char* env_product_name = getenv("PRODUCT_NAME");
@@ -79,14 +79,14 @@ int configureServer(UA_Server *uaLDSServer)
     config->discoveryCleanupTimeout = 60*60;
     config->verifyRequestTimestamp = UA_RULEHANDLING_ACCEPT; //UA_RULEHANDLING_WARN;
 
-    // config1->applicationDescription.gatewayServerUri = UA_STRING_NULL;
-    // config1->applicationDescription.discoveryProfileUri = UA_STRING_NULL;
-    // config1->applicationDescription.discoveryUrlsSize = 0;
-    // config1->applicationDescription.discoveryUrls = NULL;
+    // config->applicationDescription.gatewayServerUri = UA_STRING_NULL;
+    // config->applicationDescription.discoveryProfileUri = UA_STRING_NULL;
+    // config->applicationDescription.discoveryUrlsSize = 0;
+    // config->applicationDescription.discoveryUrls = NULL;
 
     // Certificate Verification that accepts every certificate. Can be overwritten when the policy is specialized.
     // required for LDS
-    UA_CertificateVerification_AcceptAll(&config->certificateVerification);
+    //UA_CertificateVerification_AcceptAll(&config->certificateVerification);
     config->secureChannelPKI.clear(&config->secureChannelPKI);
     //UA_ByteString_clear(&certificate);
     //UA_ByteString_clear(&privateKey);
