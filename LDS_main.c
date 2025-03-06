@@ -42,15 +42,15 @@ int main(int argc, char *argv[])
      UA_ServerConfig *config = UA_Server_getConfig(uaLDSServer);
      UA_ServerConfig_setMinimal(config, 4840, NULL);
 
-     int retval = encryptServer(uaLDSServer);
-	 if (retval != UA_STATUSCODE_GOOD)
+     int status = encryptServer(uaLDSServer);
+	 if (status != UA_STATUSCODE_GOOD)
 	 {
 		UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not encrypt the LDS server : %s", UA_StatusCode_name(retval));
 		return EXIT_FAILURE;
 	 }
 
-	 int retval = configureServer(uaLDSServer);
-	 if (retval != UA_STATUSCODE_GOOD)
+	 status = configureServer(uaLDSServer);
+	 if (status != UA_STATUSCODE_GOOD)
 	 {
 		UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not configure the LDS server : %s", UA_StatusCode_name(retval));
 		return EXIT_FAILURE;
@@ -60,9 +60,9 @@ int main(int argc, char *argv[])
     	UA_Int16 nsIdx_LDS = UA_Server_addNamespace(uaLDSServer1, "LDS");
     	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "New Namespace added with Nr. %d", nsIdx_LDS);
 
-    	retval = UA_Server_run_startup(uaLDSServer1);
+    	status = UA_Server_run_startup(uaLDSServer1);
     	UA_Server_setServerOnNetworkCallback(uaLDSServer1, serverOnNetworkCallback, NULL);
-    	if (retval != UA_STATUSCODE_GOOD)
+    	if (status != UA_STATUSCODE_GOOD)
     	{
         	UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not start the LDS server. StatusCode %s", UA_StatusCode_name(retval));
         	UA_Server_delete(uaLDSServer1);
