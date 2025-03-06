@@ -91,7 +91,8 @@ UA_EndpointDescription *getRegisterEndpointFromServer(const char *discoveryServe
                      "GetEndpoints failed with %s", UA_StatusCode_name(retval));
         UA_Client_delete(client);
         return NULL;
-    }
+    } else
+	    return endpointArray;
 }
 
 int main(int argc, char *argv[])
