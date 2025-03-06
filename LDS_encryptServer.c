@@ -89,8 +89,8 @@ int generateSSCert(UA_Server *uaLDSServer,
                    UA_ByteString *revocationList, size_t revocationListSize)
 {	
 	
-	UA_ByteString derPrivKey = UA_ByteString_NULL;
-	UA_ByteString derCert = UA_ByteString_NULL;
+	UA_ByteString derPrivKey;
+	UA_ByteString derCert;
 	
 	UA_String subject[7] = {UA_STRING_STATIC("C=SG"),
 				UA_STRING_STATIC("S=Singapore"),
@@ -120,9 +120,9 @@ int generateSSCert(UA_Server *uaLDSServer,
 						UA_CERTIFICATEFORMAT_DER, kvm, &derPrivKey, &derCert);
 	UA_KeyValueMap_delete(kvm);
 	
-	ua_assert(status == UA_STATUSCODE_GOOD);
-	ua_assert(derPrivKey.length > 0);
-	ua_assert(derCert.length > 0);
+	UA_assert(status == UA_STATUSCODE_GOOD);
+	UA_assert(derPrivKey.length > 0);
+	UA_assert(derCert.length > 0);
 	
 	UA_ServerConfig *config = UA_Server_getConfig(uaLDSServer);
 
