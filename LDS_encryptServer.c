@@ -98,13 +98,11 @@ int generateSSCert(UA_Server *uaLDSServer,
 				UA_STRING_STATIC("O=Virtual Skies"),
 				UA_STRING_STATIC("U=IT"),
 				UA_STRING_STATIC("CN=lds.virtualskies.com.sg"),
-				UA_STRING_STATIC("EM=jacky81100@yahoo.com")
-				}
-	UA_UInt32 lenSubject = 7;
+				UA_STRING_STATIC("EM=jacky81100@yahoo.com") };
 	
-	UA_String subjectAltName[2] = {
-							UA_STRING_STATIC("DNS.1:localhost"),
-							UA_STRING_STATIC("DNS.2:lds.virtualskies.com.sg") }
+	UA_UInt32 lenSubject = 7;
+	UA_String subjectAltName[2] = {UA_STRING_STATIC("DNS.1:localhost"),
+					UA_STRING_STATIC("DNS.2:lds.virtualskies.com.sg") };
 	UA_UInt32 lenSubjectAltName = 2;
 	
 	UA_KeyValueMap *kvm = UA_KeyValueMap_new();
