@@ -28,9 +28,11 @@ int encryptServer(UA_Server *uaLDSServer)
 		 UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encrypterver.c : cannot find %s", env_privatekeyloc);
 
 	// Load trustlist
-	UA_ByteString *trustList = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
-	UA_ByteString_copy(&certificate, &trustList[0]);
-	size_t trustListSize = 1;
+	//UA_ByteString *trustList = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
+	//UA_ByteString_copy(&certificate, &trustList[0]);
+	UA_ByteString *trustList = NULL;
+	size_t trustListSize = 0;
+	
     	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Successfully loaded LDS trustlist");
 	// Loading of a issuer list, not used in this application
     	UA_ByteString *issuerList = NULL;
@@ -149,7 +151,7 @@ int generateSSCert(UA_Server *uaLDSServer,
 							trustList, trustListSize, 
 							issuerList, issuerListSize, 
 							revocationList, revocationListSize);
-	config->tcpReuseAddr = true;
+	//config->tcpReuseAddr = true;
 	UA_assert(status == UA_STATUSCODE_GOOD);
 	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Self signed certificate and key generated successfully");
 	
