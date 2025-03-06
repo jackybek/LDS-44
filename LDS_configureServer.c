@@ -22,7 +22,7 @@ int configureServer(UA_Server *uaLDSServer)
 
     config->accessControl.clear(&config->accessControl);
     UA_CertificateVerification verifyX509;
-    status = UA_AccessControl_default(&config, UA_FALSE, &verifyX509, &config1.securityPolicies[config1.securityPoliciesSize-1].policyUri, 2, logins);
+    status = UA_AccessControl_default(config, UA_FALSE, &config.securityPolicies[config.securityPoliciesSize-1].policyUri, 2, logins);
     if (retval != UA_STATUSCODE_GOOD)
 	return EXIT_FAILURE;
     else
