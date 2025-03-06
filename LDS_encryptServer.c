@@ -105,7 +105,7 @@ int generateSSCert(UA_Server *uaLDSServer,
 
 	UA_String subject[3] = {UA_STRING_STATIC("C=SG"),
 				UA_STRING_STATIC("S=Singapore"),
-				UA_STRING_STATUC("CN=lds.virtualskies.com.sg") };
+				UA_STRING_STATIC("CN=lds.virtualskies.com.sg") };
 	
 	/*
 	UA_String subject[7] = {UA_STRING_STATIC("C=SG"),
