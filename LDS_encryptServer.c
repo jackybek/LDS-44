@@ -102,7 +102,7 @@ int generateSSCert(UA_Server *uaLDSServer,
 {	
 	
 	UA_ByteString derPrivKey = UA_BYTESTRING_NULL;
-	UA_ByteString derCert = UA_BYTESTRING;
+	UA_ByteString derCert = UA_BYTESTRING_NULL;
 
 	UA_String subject[3] = {UA_STRING_STATIC("C=SG"),
 				UA_STRING_STATIC("O=Virtual Skies"),
