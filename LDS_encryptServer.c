@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 int encryptServer(UA_Server *);
-int generateSSCert(UA_Server *, UA_ByteString *, size_t, UA_ByteString *, size_t);
+int generateSSCert(UA_Server *, UA_ByteString *, size_t, UA_ByteString *, size_t, UA_ByteString *, size_t);
 
 int encryptServer(UA_Server *uaLDSServer)
 {
@@ -84,9 +84,9 @@ int encryptServer(UA_Server *uaLDSServer)
 }
 	
 int generateSSCert(UA_Server *uaLDSServer,
-					trustList, trustListSize,
-                    issuerList, issuerListSize,
-                    revocationList, revocationListSize)
+		   UA_ByteString *trustList, size_t trustListSize,
+                   UA_ByteString *issuerList, size_t issuerListSize,
+                   UA_ByteString *revocationList, size_t revocationListSize)
 {	
 	
 	UA_ByteString derPrivKey = UA_ByteString_NULL;
@@ -131,10 +131,10 @@ int generateSSCert(UA_Server *uaLDSServer,
 
 	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"LDS_encryptServer.c : Generating self signed certificate and key");
 	status = UA_ServerConfigsetDefaultWithSecurityPolicies(config, 4840, 
-															&derCert, &derPrivKey,
-															trustList, trustListSize, 
-															issuerList, issuerListSize, 
-															revocationList, revocationListSize);
+							&derCert, &derPrivKey,
+							trustList, trustListSize, 
+							issuerList, issuerListSize, 
+							revocationList, revocationListSize);
 	config->tcpReuseAddr = true;
 	ck_assert(status == UA_STATUSCODE_GOOD);
 	
