@@ -25,7 +25,7 @@ int configureServer(UA_Server *uaLDSServer)
     UA_ServerConfig *config = UA_Server_getConfig(uaLDSServer);
 
     config->accessControl.clear(&config->accessControl);
-    UA_CertificateVerification verifyX509;
+    //UA_CertificateVerification verifyX509;
     status = UA_AccessControl_default(config, UA_FALSE, &config->securityPolicies[config->securityPoliciesSize-1].policyUri, usernamePasswordsSize, logins);
     if (status != UA_STATUSCODE_GOOD)
 	return EXIT_FAILURE;
