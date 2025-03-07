@@ -118,6 +118,9 @@ RUN cmake -S .. -DOPENSSL_CRYPTO_LIBRARY=/usr/local/ssl/lib64/libcrypto.so -DOPE
 
 WORKDIR /root/open62541/build/
 RUN make
+RUN make doc
+RUN make doc_pdf
+RUN make latexpdf
 RUN export open62541_NODESET_DIR='/root/open62541/deps/ua-nodeset/Schema/'
 
 # -- creates the volume in container
