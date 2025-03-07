@@ -2,8 +2,8 @@
 //#include "SV_NewMonitor.h"
 //#include <open62541/plugin/network.h>
 #include <open62541/client_highlevel.h>
-#include <open62541/plugin/log_stdout.h>
 #include <open62541/client_config_default.h>
+#include <open62541/plugin/log_stdout.h>
 #include <open62541/plugin/create_certificate.h>
 #include <open62541/plugin/securitypolicy.h>
 #include <open62541/plugin/accesscontrol_default.h>
