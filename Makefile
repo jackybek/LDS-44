@@ -14,7 +14,7 @@ OBJ= LDS_Misc.o LDS_configureServer.o LDS_encryptServer.o LDS_main.o
 ODIR=obj
 LDIR1=-L/usr/local/lib/
 LDIR2=-L/usr/lib/
-LDFLAGS=-L$(HOME)build/bin/ -l:libopen62541.a
+LDFLAGS=-L$(HOME)build/bin/ -l:libopen62541.a -l:liblibmdnsd.a
 
 all: myNewLDSServer
 
