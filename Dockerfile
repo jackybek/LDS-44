@@ -91,9 +91,17 @@ RUN apt-get install libavahi-client-dev libavahi-common-dev -y
 # -- get the open62541 source from github
 WORKDIR /root 
 RUN apt-get install git -y
-RUN git clone https://github.com/open62541/open62541.git --branch v1.4.8 -c advice.detachedHead=FALSE
+RUN git clone https://github.com/open62541/open62541.git --branch v1.4.10 -c advice.detachedHead=FALSE
 WORKDIR /root/open62541
 RUN git submodule update --init --recursive
+
+# -- install options for cmake
+RUN apt-get install biber -y
+RUN apt-get install clang-format -y
+RUN apt-get install clang-tidy -y
+RUN apt-get install latex2html -y
+RUN apt-get install texlive-xetex -y
+RUN apt-get install xindy -y
 
 # -- build the base open62541 libraries
 WORKDIR /root/open62541
