@@ -3,9 +3,9 @@ CC=gcc
 CFLAGS1=-g -std=c99 -Wall -Werror -Wno-implicit -Wfatal-errors
 #CC=g++
 #CFLAGS1=-x c++ -std=c++98 -v -fpermissive -Wno-literal-suffix -Wno-write-strings -Wno-long-long -Wno-return-type
-CFLAGS2=-I$(HOME) -I$(HOME)include/ -I$(HOME)plugins/ -I$(HOME)src/ -I$(HOME)open62541/build/src_generated/ \
--I$(HOME)arch/ -I$(HOME)deps/ -I$(HOME)plugins/include/ -I/usr/local/include/ -I$(HOME)open62541/plugins/ -I$(HOME)open62541/include/ \
--I$(HOME)open62541/plugins/include/
+CFLAGS2=-I$(HOME) -I$(HOME)include/ -I$(HOME)plugins/ -I$(HOME)src/ -I$(HOME)build/src_generated/ \
+-I$(HOME)arch/ -I$(HOME)deps/ -I$(HOME)plugins/include/ -I/usr/local/include/ -I$(HOME)plugins/ -I$(HOME)include/ \
+-I$(HOME)plugins/include/
 CFLAGS3=-g -pass-exit-codes
 DEPS=
 LIBS=-lm -lrt -lpthread  -lcrypto -lssl -lmbedcrypto -lmbedtls -lmbedx509 -lwebsockets
@@ -26,5 +26,5 @@ myNewLDSServer: $(OBJ)
 	$(CC) $(LDIR1) $(LDIR2) -o $@ $^ $(LDFLAGS) $(LIBS)
 
 # Important notes:
-# $(HOME)/open62541/build/src_generated => open62541/config.h is located here
-# $(HOME)/open62541/plugins/include/ => open62541/client_config_default.h is located here
+# $(HOME)/build/src_generated => open62541/config.h is located here
+# $(HOME)/plugins/include/ => open62541/client_config_default.h is located here
