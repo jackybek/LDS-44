@@ -25,7 +25,8 @@ all: myNewLDSServer
 myNewLDSServer: $(OBJ)
 	$(CC) $(LDIR1) $(LDIR2) -o $@ $^ $(LDFLAGS) $(LIBS)
 
-clean: rm -f *.o
+clean: 
+	rm -f *.o
 
 # Important notes:
 # $(HOME)/build/src_generated => open62541/config.h is located here
