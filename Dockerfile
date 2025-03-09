@@ -14,7 +14,7 @@ SHELL ["/bin/bash", "-c"]
 ########################################
 RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y 
 
-RUN apt-get install -y apt-utils 2>&1 | grep -v "^debconf: delaying package configuration, since apt-utils.*"
+RUN apt-get install -y apt-utils
 # -- prepare the build environment for OPC62541
 RUN apt-get install build-essential pkg-config python3 net-tools -y
 RUN apt-get install cmake-curses-gui -y
