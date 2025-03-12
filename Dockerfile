@@ -14,27 +14,28 @@ SHELL ["/bin/bash", "-c"]
 ########################################
 RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y 
 
-RUN apt-get install -y apt-utils
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y apt-utils
 # -- prepare the build environment for OPC62541
-RUN apt-get install build-essential pkg-config python3 net-tools -y
-RUN apt-get install cmake-curses-gui -y
-RUN apt-get install check libsubunit-dev -y
-RUN apt-get install libmbedtls-dev -y
-RUN apt-get install wget -y
-RUN apt-get install lib32readline8 lib32readline-dev -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install build-essential pkg-config python3 net-tools iputils-ping -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install cmake-curses-gui -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install check libsubunit-dev -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install libmbedtls-dev -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install wget -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install lib32readline8 lib32readline-dev -y
 
 #########################################################
 # -- build GCC from source to get the latest version
 # -- https://iq.opengenus.org/build-gcc-from-source/
 #########################################################
 WORKDIR /root
-#RUN apt-get install git -y
-#RUN apt-get remove gcc -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install git -y
+# -------DO NOT remove GCC otherwise git-clone will be very slow
+#RUN DEBIAN_FRONTEND="noninteractive" apt-get remove gcc -y
 
 ###############################
 # -- pre-requisites for GCC
 ###############################
-RUN apt-get install flex -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install flex -y
 
 #############################################################################
 # -- get gcc from source using git-clone : https://gcc.gnu.org/gcc-14/
@@ -78,12 +79,12 @@ WORKDIR /etc/profile.d
 ###################################################
 # -- remove default openssl libraries
 ###################################################
-RUN apt-get remove openssl -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get remove openssl -y
 
 #######################
 # -- install zlib
 #######################
-RUN apt-get install zlib1g-dev -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install zlib1g-dev -y
 # -- alternate - compile from source
 #WORKDIR /root
 #RUN wget https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.gz
@@ -123,7 +124,7 @@ RUN /usr/local/ssl/bin/openssl version -a
 # -- https://markusthill.github.io/blog/2024/installing-cmake/
 ############################################################################
 WORKDIR /root
-RUN apt-get remove --purge --autoremove cmake -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get remove --purge --autoremove cmake -y
 RUN wget https://cmake.org/files/v3.31/cmake-3.31.6.tar.gz
 RUN tar -xvf cmake-3.31.6.tar.gz
 RUN cd cmake-3.31.6/
@@ -140,14 +141,14 @@ RUN source /etc/environment
 RUN echo $PATH
 RUN cmake --version -a
 # -- alternative - use apt-get
-# apt-get install cmake
+# DEBIAN_FRONTEND="noninteractive" apt-get install cmake
 
 ######################################
 # -- add websockets capability
 ######################################
 # -- library is installed  to /usr/local/include
 WORKDIR /root
-RUN apt-get install git -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install git -y
 RUN git clone https://libwebsockets.org/repo/libwebsockets
 WORKDIR /root/libwebsockets
 RUN mkdir build
@@ -157,31 +158,31 @@ RUN make -j4
 RUN make install
 RUN ldconfig
 RUN pkg-config --modversion libwebsockets
-RUN apt-get remove git -y
+#RUN DEBIAN_FRONTEND="noninteractive" apt-get remove git -y
 # -- alternative - use apt-get
 #RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-#RUN apt-get install libwebsockets-dev -y
+#RUN DEBIAN_FRONTEND="noninteractive" apt-get install libwebsockets-dev -y
 
 #######################################################################################
 # -- install other libraries needed for user-defined application e.g. open62541lds
 #######################################################################################
 WORKDIR /root
-RUN apt-get install libjson-c-dev -y
-RUN apt-get install libxml2-dev -y
-RUN apt-get install mariadb-client -y
-RUN apt-get install libmariadb3 libmariadb-dev -y
-RUN apt-get install mosquitto-clients -y
-RUN apt-get install net-tools proftpd nano -y
-RUN apt-get install python3-sphinx graphviz -y
-RUN apt-get install python3-sphinx-rtd-theme -y
-RUN apt-get install texlive-latex-recommended -y
-RUN apt-get install libavahi-client-dev libavahi-common-dev -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install libjson-c-dev -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install libxml2-dev -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install mariadb-client -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install libmariadb3 libmariadb-dev -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install mosquitto-clients -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install net-tools proftpd nano -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install python3-sphinx graphviz -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install python3-sphinx-rtd-theme -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install texlive-latex-recommended -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install libavahi-client-dev libavahi-common-dev -y
 
 ################################################
 # -- get the open62541 source from github
 ################################################
 WORKDIR /root 
-RUN apt-get install git -y
+#RUN DEBIAN_FRONTEND="noninteractive" apt-get install git -y
 RUN git clone https://github.com/open62541/open62541.git --branch v1.4.9 -c advice.detachedHead=FALSE
 WORKDIR /root/open62541
 RUN git submodule update --init --recursive
@@ -189,12 +190,12 @@ RUN git submodule update --init --recursive
 ##################################
 # -- install options for cmake
 ##################################
-RUN apt-get install biber -y
-RUN apt-get install clang-format -y
-RUN apt-get install clang-tidy -y
-RUN apt-get install latex2html -y
-RUN apt-get install texlive-xetex -y
-RUN apt-get install xindy -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install biber -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install clang-format -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install clang-tidy -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install latex2html -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install texlive-xetex -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install xindy -y
 
 ###########################################
 # -- build the base open62541 libraries
