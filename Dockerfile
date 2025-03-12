@@ -51,6 +51,7 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install g++
 RUN ../gcc/configure --prefix=/usr/local/gcc14.2.0 --disable-multilib --with-system-zlib --enable-languages=c,c++ --program-suffix=14.2.0
 RUN ulimit -m unlimited
 RUN ulimit -v unlimited
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install zlib1g-dev -y
 RUN make -j4                     
 RUN make install
 WORKDIR /etc
