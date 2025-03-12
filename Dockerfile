@@ -36,6 +36,7 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install git -y
 # -- pre-requisites for GCC
 ###############################
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install flex -y
+RUN ../gcc/configure --prefix=/usr/local/gcc14.2.0 --disable-multilib --with-system-zlib --enable-languages=c,c++ --program-suffix=14.2.0
 
 #############################################################################
 # -- get gcc from source using git-clone : https://gcc.gnu.org/gcc-14/
@@ -48,7 +49,6 @@ WORKDIR /root
 RUN mkdir objdir
 WORKDIR /root/objdir
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install g++
-RUN ../gcc/configure --prefix=/usr/local/gcc14.2.0 --disable-multilib --with-system-zlib --enable-languages=c,c++ --program-suffix=14.2.0
 RUN ulimit -m unlimited
 RUN ulimit -v unlimited
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install zlib1g-dev -y
