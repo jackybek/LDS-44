@@ -31,8 +31,7 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install git -y
 ###############################
 # -- pre-requisites for GCC
 ###############################
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install flex -y
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install zlib1g-dev -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install flex zlib1g-dev -y
 
 #############################################################################
 # -- get gcc from source using git-clone : https://gcc.gnu.org/gcc-14/
