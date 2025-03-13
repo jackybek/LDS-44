@@ -16,11 +16,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y apt-utils
 # -- prepare the build environment for OPC62541
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install build-essential pkg-config python3 net-tools iputils-ping -y
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install cmake-curses-gui -y
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install check libsubunit-dev -y
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install libmbedtls-dev -y
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install wget -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install build-essential pkg-config python3 net-tools iputils-ping cmake-curses-gui check libsubunit-dev libmbedtls-dev wget -y
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install lib32readline8 lib32readline-dev -y
 
 #########################################################
