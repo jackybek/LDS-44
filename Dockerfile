@@ -14,10 +14,9 @@ SHELL ["/bin/bash", "-c"]
 ########################################
 RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y 
 
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y apt-utils
 # -- prepare the build environment for OPC62541
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install build-essential pkg-config python3 net-tools iputils-ping cmake-curses-gui check libsubunit-dev libmbedtls-dev wget -y
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install lib32readline8 lib32readline-dev -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install apt-utils lib32readline8 lib32readline-dev -y
 
 ###############################
 # -- pre-requisites for GCC
