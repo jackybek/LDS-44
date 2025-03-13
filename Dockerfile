@@ -19,21 +19,16 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y apt-utils
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install build-essential pkg-config python3 net-tools iputils-ping cmake-curses-gui check libsubunit-dev libmbedtls-dev wget -y
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install lib32readline8 lib32readline-dev -y
 
-#########################################################
-# -- build GCC from source to get the latest version
-# -- https://iq.opengenus.org/build-gcc-from-source/
-#########################################################
-WORKDIR /root
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install git -y
-# -------DO NOT remove GCC otherwise git-clone will be very slow
-#RUN DEBIAN_FRONTEND="noninteractive" apt-get remove gcc -y
-
 ###############################
 # -- pre-requisites for GCC
 ###############################
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install flex zlib1g-dev -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install flex zlib1g-dev g++ git -y
+# -------DO NOT remove GCC otherwise git-clone will be very slow
+#RUN DEBIAN_FRONTEND="noninteractive" apt-get remove gcc -y
 
 #############################################################################
+# -- build GCC from source to get the latest version
+# -- https://iq.opengenus.org/build-gcc-from-source/
 # -- get gcc from source using git-clone : https://gcc.gnu.org/gcc-14/
 #############################################################################
 RUN git clone git://gcc.gnu.org/git/gcc.git
@@ -43,7 +38,6 @@ RUN ./contrib/download_prerequisites
 WORKDIR /root
 RUN mkdir objdir
 WORKDIR /root/objdir
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install g++
 RUN ../gcc/configure --prefix=/usr/local/gcc14.2.0 --disable-multilib --with-system-zlib --enable-languages=c,c++ --program-suffix=14.2.0
 RUN ulimit -m unlimited
 RUN ulimit -v unlimited
@@ -72,28 +66,12 @@ WORKDIR /etc/profile.d
 #   - use the `-Wl,-rpath -Wl,LIBDIR' linker flag
 #   - have your system administrator add LIBDIR to `/etc/ld.so.conf'
 
-###################################################
-# -- remove default openssl libraries
-###################################################
-RUN DEBIAN_FRONTEND="noninteractive" apt-get remove openssl -y
-
-#######################
-# -- install zlib
-#######################
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install zlib1g-dev -y
-# -- alternate - compile from source
-#WORKDIR /root
-#RUN wget https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.gz
-#RUN tar -xvf zlib-1.2.13.tar.gz
-#WORKDIR /root/zlib-2.2.13
-#RUN ./configure --prefix=/usr/local/zlib
-#RUN make
-#RUN make install
 
 ####################################
-# -- reinstall openssl libraries
+# -- remove & reinstall openssl libraries
 ####################################
 WORKDIR /root
+RUN DEBIAN_FRONTEND="noninteractive" apt-get remove openssl -y
 RUN wget https://www.openssl.org/source/openssl-3.4.1.tar.gz
 RUN tar -xf openssl-3.4.1.tar.gz
 RUN pwd
