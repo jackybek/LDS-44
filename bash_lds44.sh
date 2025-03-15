@@ -157,7 +157,7 @@ sudo DEBIAN_FRONTEND="noninteractive" apt-get install libavahi-client-dev libava
 ################################################
 cd /root 
 #sudo DEBIAN_FRONTEND="noninteractive" apt-get install git -y
-sudo git clone https://github.com/open62541/open62541.git --branch v1.4.9 -c advice.detachedHead=FALSE
+sudo git clone https://github.com/open62541/open62541.git --branch v1.4.11 -c advice.detachedHead=FALSE
 cd /root/open62541
 sudo git submodule update --init --recursive
 
