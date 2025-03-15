@@ -100,7 +100,7 @@ WORKDIR /root
 RUN DEBIAN_FRONTEND="noninteractive" apt-get remove --purge --autoremove cmake -y
 RUN wget https://cmake.org/files/v3.31/cmake-3.31.6.tar.gz
 RUN tar -xvf cmake-3.31.6.tar.gz
-WORKDIR cmake-3.31.6/
+WORKDIR /root/cmake-3.31.6/
 RUN ./configure
 RUN gmake
 RUN make install
