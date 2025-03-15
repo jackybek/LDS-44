@@ -25,7 +25,7 @@
 #include <pthread.h>
 
 int main(int argc, char** argv);
-int encryptServer(UA_Server *);
+int encryptServer(UA_Server *, UA_ServerConfig *);
 int configureServer(UA_Server *);
 static void stopHandler(int);
 static void serverOnNetworkCallback(const UA_ServerOnNetwork *, UA_Boolean, UA_Boolean, void *);
@@ -105,12 +105,13 @@ int main(int argc, char *argv[])
 
      signal(SIGINT, stopHandler);
      signal(SIGTERM, stopHandler);
-	 
+ 
 	UA_Server *uaLDSServer = UA_Server_new();
      	UA_ServerConfig *config = UA_Server_getConfig(uaLDSServer);
+	UA_ServerConfig_clean(config);
      	UA_ServerConfig_setMinimal(config, 4840, NULL);
 
-     int status = encryptServer(uaLDSServer);
+     int status = encryptServer(uaLDSServer, config);
 	 if (status != UA_STATUSCODE_GOOD)
 	 {
 		UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not encrypt the LDS server : %s", UA_StatusCode_name(status));
@@ -123,7 +124,7 @@ int main(int argc, char *argv[])
 		UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Could not configure the LDS server : %s", UA_StatusCode_name(status));
 		return EXIT_FAILURE;
 	 }
-	 
+ 
 	//Add a new namespace to the server => Returns the index of the new namespace i.e. namespaceIndex
     	UA_Int16 nsIdx_LDS = UA_Server_addNamespace(uaLDSServer, "LDS");
     	UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "New Namespace added with Nr. %d", nsIdx_LDS);
