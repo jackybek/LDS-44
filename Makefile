@@ -31,3 +31,4 @@ clean:
 # Important notes:
 # $(HOME)/build/src_generated => open62541/config.h is located here
 # $(HOME)/plugins/include/ => open62541/client_config_default.h is located here
+# config.h.in is located in /root/open62541/include/open62541/
