@@ -6,9 +6,9 @@
 #########################
 # -- get the OS 
 #########################
-FROM debian:bookworm
-LABEL maintainer="jacky81100@yahoo.com"
-SHELL ["/bin/bash", "-c"]
+#--FROM debian:bookworm
+#--LABEL maintainer="jacky81100@yahoo.com"
+#--SHELL ["/bin/bash", "-c"]
 
 ########################################
 # -- update and upgrade OS patches
